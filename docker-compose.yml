@@ -1,0 +1,21 @@
+version: '3.8'
+services:
+  # Название нашего сервиса БД
+  db:
+    image: postgres:15
+    container_name: pawsstore_db
+    restart: always
+    environment:
+      # Настройки самой базы (логин, пароль, имя базы)
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: pawsstore
+    ports:
+      # Пробрасываем порты: стандартный порт Postgres 5432
+      - "5436:5432"
+    volumes:
+      # Чтобы данные не удалялись при выключении докера
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
