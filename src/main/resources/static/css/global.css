@@ -1,0 +1,34 @@
+/* Подключим шрифт как в макете */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+:root {
+    --primary-orange: #FF6A00;
+    --dark-blue: #0A1121;
+    --bg-light: #F8F9FA;
+    --white: #FFFFFF;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    background-color: var(--bg-light);
+}
+
+/* Стили для Header из скриншота */
+.header {
+    background: var(--white);
+    padding: 20px 10%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 24px;
+    color: var(--dark-blue);
+    text-decoration: none;
+}

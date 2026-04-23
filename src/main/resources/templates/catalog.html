@@ -1,24 +1,85 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PawsStore - Каталог</title>
-    <!-- Подключаем CSS именно для этой страницы -->
+    <title>PawsStore - Shop All Products</title>
+    <!-- Подключаем CSS -->
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/catalog.css">
 </head>
 <body>
-<header>
-    <h1>PawsStore</h1>
-    <p>Добро пожаловать в магазин для ваших питомцев!</p>
+
+<!-- Шапка сайта -->
+<header class="header">
+    <a href="/" class="logo">
+        <img src="/images/logo.png" alt="PawsStore" width="40">
+        <span>PawsStore</span>
+    </a>
+    <nav class="nav">
+        <a href="#">Shop</a>
+        <a href="#">Categories</a>
+        <a href="#">Deals</a>
+        <a href="#">About</a>
+    </nav>
+    <div class="header-icons">
+        <button class="icon-btn search-btn">🔍</button>
+        <a href="/cart" class="icon-btn cart-btn">
+            🛒 <span class="cart-badge">0</span>
+        </a>
+    </div>
 </header>
 
-<main>
-    <h2>Здесь скоро будет список товаров как на скриншоте...</h2>
+<!-- Розово-оранжевый баннер как в макете -->
+<section class="hero-banner">
+    <div class="container">
+        <h1>Shop All Products</h1>
+        <p>Discover the best products for your furry friends</p>
+    </div>
+</section>
+
+<main class="catalog-container">
+    <!-- Левая колонка: Фильтры (сделаем их позже функциональными) -->
+    <aside class="filters">
+        <h3>Filters</h3>
+        <div class="filter-group">
+            <label>Rating</label>
+            <div><input type="checkbox"> 5+ Stars</div>
+            <div><input type="checkbox"> 4+ Stars</div>
+        </div>
+        <div class="filter-group">
+            <label>Price Range</label>
+            <div class="price-inputs">
+                <input type="number" placeholder="Min">
+                <span>-</span>
+                <input type="number" placeholder="Max">
+            </div>
+        </div>
+    </aside>
+
+    <!-- Правая колонка: Сетка товаров -->
+    <section class="products-grid">
+        <!-- Thymeleaf Цикл: для каждого 'product' в списке 'products' -->
+        <div class="product-card" th:each="product : ${products}">
+            <div class="product-image-wrapper">
+                <!-- Используем th:src для динамического пути к картинке -->
+                <img th:src="${product.imageUrl}" th:alt="${product.name}">
+                <span class="price-tag" th:text="'$' + ${product.price}">$0.00</span>
+            </div>
+            <div class="product-info">
+                <h4 th:text="${product.name}">Product Name</h4>
+                <div class="rating">
+                    <!-- Простой вывод рейтинга звездами -->
+                    <span class="stars">⭐⭐⭐⭐☆</span>
+                    <span class="review-count" th:text="'(' + ${product.reviews} + ')'">(0)</span>
+                </div>
+            </div>
+        </div>
+    </section>
 </main>
 
-<!-- Скрипт для логики (пока пустой) -->
-<script src="/js/main.js"></script>
+<footer class="footer">
+    <p>&copy; 2026 PawsStore. All rights reserved.</p>
+</footer>
+
 </body>
 </html>
