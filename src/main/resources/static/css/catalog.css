@@ -1,0 +1,72 @@
+/* Баннер с градиентом */
+.hero-banner {
+    background: linear-gradient(90deg, #FF6A00 0%, #FF0080 100%);
+    color: white;
+    padding: 60px 10%;
+    margin-bottom: 40px;
+}
+
+.hero-banner h1 { font-size: 36px; margin: 0; }
+
+/* Сетка каталога */
+.catalog-container {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Фильтры слева, товары справа */
+    gap: 40px;
+    padding: 0 10%;
+}
+
+/* Карточка товара */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 30px;
+}
+
+.product-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
+/* Эффект наведения (Hover) из ТЗ */
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.product-image-wrapper {
+    position: relative;
+    height: 300px;
+}
+
+.product-image-wrapper img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Оранжевый ценник поверх картинки */
+.price-tag {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary-orange);
+    color: white;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+}
+
+.product-info {
+    padding: 20px;
+}
+
+.product-info h4 {
+    margin: 0 0 10px 0;
+    font-size: 16px;
+    color: var(--dark-blue);
+}
