@@ -1,66 +1,127 @@
-# 🐾 PawsStore - Premium Pet Supplies Platform
+Вот полный и готовый файл README.md для твоего репозитория. Он включает все
+технические особенности: Java 21, Docker (PostgreSQL 15), мультиязычность и
+современный стек.
 
-PawsStore is a full-stack e-commerce web application designed for pet lovers. Built with **Java Spring Boot**, **Thymeleaf**, and **Vanilla JavaScript**, it offers a seamless shopping experience with a focus on performance, accessibility, and modern UI/UX principles.
+🐾 PawsStore - Premium Pet Supplies E-commerce
 
-## 🌟 Key Features
+PawsStore is a robust, full-stack e-commerce platform built with Java 21 and
+Spring Boot 3. It is designed for pet owners, providing a seamless shopping
+experience with high-performance filtering, multi-language support, and a
+containerized infrastructure.
 
-*   **🛒 Persistent Shopping Cart**: Items remain in the cart even after page refreshes or closing the browser, powered by `localStorage`.
-*   **🌍 Multi-language Support (i18n)**: Toggle between English and Russian. The system dynamically serves both UI text and database content (product names/descriptions) in the selected language.
-*   **🌓 Smart Dark Mode**: A theme switcher that remembers user preference across sessions.
-*   **🔍 Dynamic Catalog & Filtering**:
-    *   Filter by price range and minimum rating.
-    *   Sort by name (A-Z), price, or rating.
-    *   Server-side filtering using custom JPQL queries.
-*   **⭐ Interactive Reviews**: Users can post reviews and ratings. The system automatically recalculates the product's average rating and total review count in real-time.
-*   **📱 Fully Responsive**: Optimized for a wide range of devices, from mobile phones (375px) to ultra-wide monitors (1440px+).
-*   **🔥 Hot Deals Section**: A dedicated area for discounted products identified by price comparisons in the database.
+🌟 Key Features
 
-## 🛠 Tech Stack
+  - 🌍 Full Localization (i18n):
+      - Dynamic switching between English and Russian.
+      - UI translations managed via Spring Resource Bundles
+        (messages.properties).
+      - Product data (names, descriptions, specs) stored in both languages
+        within the database.
+  - 🐳 Dockerized Database:
+      - Uses PostgreSQL 15 containerized via Docker Compose.
+      - Persistent data storage using Docker volumes.
+  - 🛒 Client-Side Shopping Cart:
+      - Implemented using Vanilla JavaScript and localStorage.
+      - Items are preserved even after the browser is closed or the page is
+        refreshed.
+  - 🌓 Theme Engine:
+      - Native Dark/Light mode support with persistent user preference.
+      - Smooth CSS transitions and modern UI components.
+  - 🔍 Advanced Catalog System:
+      - Dynamic server-side filtering (Price range, Minimum rating).
+      - Flexible sorting (A-Z localized, Price, Popularity).
+  - ⭐ Live Review System:
+      - Users can submit ratings and comments.
+      - The system automatically recalculates the product's average rating and
+        review count in real-time.
+  - 📱 Fully Responsive: Adaptive design optimized for devices from 375px
+    to 1440px.
 
-*   **Backend**: Java 21, Spring Boot 3.x, Spring Data JPA.
-*   **Database**: H2 (In-memory for development) / Easily switchable to PostgreSQL/MySQL.
-*   **Frontend**: Thymeleaf (Template Engine), Modern CSS (Flexbox & Grid), Vanilla JavaScript.
-*   **Security & Logic**: LocaleChangeInterceptors, CookieLocaleResolvers.
+🛠 Tech Stack
 
-## 🚀 Getting Started
+  - Backend: Java 21, Spring Boot 3.x, Spring Data JPA.
+  - Database: PostgreSQL 15 (Dockerized).
+  - Frontend: Thymeleaf Template Engine, Modern CSS3 (Grid/Flexbox), Vanilla
+    JavaScript (ES6+).
+  - DevOps: Docker, Docker Compose, Maven.
 
-### Prerequisites
-*   JDK 17 or higher
-*   Maven 3.6+
+📦 Getting Started
 
-### Installation & Run
-1.  **Clone the repository**:
-    ```bash
-    git clone https://github.com/your-username/pawsstore.git
-    ```
-2.  **Navigate to project folder**:
-    ```bash
-    cd pawsstore
-    ```
-3.  **Build the project**:
-    ```bash
-    mvn clean install
-    ```
-4.  **Run the application**:
-    ```bash
-    mvn spring-boot:run
-    ```
-5.  **Access the store**: Open `http://localhost:8080` in your browser.
+Prerequisites
 
-## 📂 Project Structure
+  - JDK 21
+  - Maven 3.9+
+  - Docker & Docker Compose
 
-*   `src/main/java/.../config/` — Localization settings and database auto-initialization.
-*   `src/main/java/.../controller/` — MVC Controllers handling catalog navigation and review posts.
-*   `src/main/java/.../model/` — JPA Entities (Product and Review).
-*   `src/main/java/.../repository/` — Data access layer with custom filtering logic.
-*   `src/main/resources/static/` — CSS, JavaScript, and asset files.
-*   `src/main/resources/templates/` — Thymeleaf HTML templates and fragments.
+1. Database Setup
 
-## 📊 Database Initialization
-The project includes a `DataInitializer` class that automatically seeds the database with premium pet products, images, and random customer reviews upon the first launch. This allows for immediate testing of sorting, filtering, and localized content.
+The project uses Docker to manage the PostgreSQL database. Run the following
+command to start the database container:
 
-## 📜 License
-This project is open-source and available under the [MIT License](LICENSE).
+```
+docker-compose up -d
+```
 
----
-Developed with 🧡 for pets and their owners.
+Database Configuration (docker-compose.yml):
+
+  - Image: postgres:15
+  - Internal Port: 5432
+  - External Port: 5436
+  - Credentials: user / password
+  - Database Name: pawsstore
+
+2. Application Configuration
+
+Ensure your src/main/resources/application.properties points to the Docker
+container:
+```
+spring.datasource.url=jdbc:postgresql://localhost:5436/pawsstore
+spring.datasource.username=user
+spring.datasource.password=password
+spring.jpa.hibernate.ddl-auto=update
+```
+3. Build and Run
+
+# Install dependencies and build the JAR
+```
+mvn clean install
+```
+
+# Run the Spring Boot application
+```
+mvn spring-boot:run
+```
+
+Once started, the application will be available at: http://localhost:8080
+
+📂 Project Structure
+
+  - src/main/java/.../config/ — Localization (i18n) setup and Database
+    auto-seeding.
+  - src/main/java/.../controller/ — MVC Controllers for catalog and review
+    logic.
+  - src/main/java/.../model/ — JPA Entities (Product, Review) with dual-language
+    fields.
+  - src/main/java/.../repository/ — Data Access Layer with custom JPQL
+    filtering.
+  - src/main/resources/messages.properties — UI translation bundles (EN/RU).
+  - src/main/resources/static/ — Assets (CSS, JS, Images).
+  - src/main/resources/templates/ — Thymeleaf HTML templates.
+  - docker-compose.yml — PostgreSQL 15 infrastructure.
+
+🌍 Localization (i18n) Logic
+
+The project handles localization at two levels:
+
+1.  Static Content: Titles, buttons, and labels are pulled from
+    messages.properties (English) or messages_ru.properties (Russian) based on
+    the user's locale.
+2.  Dynamic Content: The Product entity contains separate fields (e.g., nameEn
+    and nameRu). The frontend intelligently displays the correct field based on
+    the active language.
+
+📜 License
+
+Distributed under the MIT License. See LICENSE for more information.
+
+Developed with 🧡 for pet owners and modern engineering.
