@@ -1,72 +1,150 @@
-/* Баннер с градиентом */
-.hero-banner {
-    background: linear-gradient(90deg, #FF6A00 0%, #FF0080 100%);
-    color: white;
-    padding: 60px 10%;
-    margin-bottom: 40px;
-}
-
-.hero-banner h1 { font-size: 36px; margin: 0; }
-
-/* Сетка каталога */
-.catalog-container {
-    display: grid;
-    grid-template-columns: 250px 1fr; /* Фильтры слева, товары справа */
+.catalog-main {
+    display: flex; /* Используем flex для боковой панели и контента */
     gap: 40px;
-    padding: 0 10%;
+    padding: 40px 8%;
+    max-width: 1440px;
+    margin: 0 auto;
 }
 
-/* Карточка товара */
+/* Сайдбар фильтров */
+.sidebar {
+    width: 280px;
+    flex-shrink: 0;
+    background: var(--card-bg);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid var(--border);
+    height: fit-content;
+}
+
+/* Сетка товаров */
+.content { flex-grow: 1; }
+
 .products-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: 30px;
 }
 
-.product-card {
-    background: white;
-    border-radius: 12px;
+/* Карточка товара как в Figma */
+.card {
+    background: var(--card-bg);
+    border-radius: 15px;
+    border: 1px solid var(--border);
     overflow: hidden;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.3s ease;
 }
 
-/* Эффект наведения (Hover) из ТЗ */
-.product-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+.card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 }
 
-.product-image-wrapper {
+.img-wrapper {
     position: relative;
     height: 300px;
+    background: #fdfdfd;
 }
 
-.product-image-wrapper img {
+.img-wrapper img {
     width: 100%;
     height: 100%;
-    object-fit: cover;
-}
-
-/* Оранжевый ценник поверх картинки */
-.price-tag {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: var(--primary-orange);
-    color: white;
-    padding: 5px 12px;
-    border-radius: 20px;
-    font-weight: 600;
-}
-
-.product-info {
+    object-fit: contain; /* Чтобы картинки не обрезались, а вписывались */
     padding: 20px;
 }
 
-.product-info h4 {
+.price-pill {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: var(--primary);
+    color: white;
+    padding: 6px 15px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.card-body {
+    padding: 20px;
+    border-top: 1px solid var(--border);
+}
+
+.card-body h4 {
     margin: 0 0 10px 0;
-    font-size: 16px;
-    color: var(--dark-blue);
+    font-size: 17px;
+    line-height: 1.4;
+}
+
+.rating {
+    color: #FFB800;
+    font-size: 14px;
+    display: flex;
+    gap: 5px;
+}
+
+/* Верхняя панель над товарами */
+.toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--card-bg);
+    padding: 15px 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    margin-bottom: 30px;
+    font-size: 14px;
+}
+
+.sort { display: flex; align-items: center; gap: 10px; }
+
+/* Красивый селект как в Figma */
+.sort select {
+    padding: 8px 15px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    cursor: pointer;
+}
+
+/* Фикс логотипа в футере для темной темы */
+[data-theme='dark'] .footer-brand img {
+    filter: invert(1) brightness(2);
+}
+
+/* Цвета кнопок как в Figma (более яркий розовый) */
+.btn-primary {
+    background: linear-gradient(90deg, #FF6A00 0%, #EE2A7B 100%);
+    box-shadow: 0 4px 15px rgba(238, 42, 123, 0.3);
+}
+
+
+/* Адаптивность для Каталога */
+@media (max-width: 992px) {
+    .catalog-main {
+        flex-direction: column; /* Сайдбар сверху, контент снизу */
+    }
+    .sidebar {
+        width: 100%; /* Сайдбар на всю ширину */
+    }
+    .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .toolbar {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+    .products-grid {
+        grid-template-columns: 1fr; /* По одному товару в ряд */
+    }
+    .img-wrapper { height: 200px; }
 }
