@@ -1,34 +1,240 @@
-/* Подключим шрифт как в макете */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --primary-orange: #FF6A00;
-    --dark-blue: #0A1121;
-    --bg-light: #F8F9FA;
-    --white: #FFFFFF;
+    --primary: #FF6A00;
+    --primary-grad: linear-gradient(90deg, #FF6A00 0%, #FF0080 100%);
+    --bg: #ffffff;
+    --text: #0A1121;
+    --card-bg: #ffffff;
+    --footer-bg: #0A1121;
+    --border: #eceef0;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 }
+
+/* Темная тема */
+[data-theme='dark'] {
+    --bg: #121212;
+    --text: #ffffff;
+    --card-bg: #1e1e1e;
+    --border: #333333;
+    --shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+}
+
+* { box-sizing: border-box; }
 
 body {
-    font-family: 'Inter', sans-serif;
-    margin: 0;
-    background-color: var(--bg-light);
+    margin: 0; font-family: 'Inter', sans-serif;
+    background-color: var(--bg); color: var(--text);
+    transition: background 0.3s, color 0.3s;
+    line-height: 1.6;
 }
 
-/* Стили для Header из скриншота */
+/* HEADER из Figma */
 .header {
-    background: var(--white);
-    padding: 20px 10%;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 1000;
+    padding: 15px 8%;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.02);
+}
+
+.header-content {
+    display: flex; justify-content: space-between; align-items: center;
+    max-width: 1440px; margin: 0 auto;
+}
+
+.logo img { height: 45px; display: block; }
+
+.nav a {
+    margin: 0 20px; text-decoration: none;
+    color: var(--text); font-weight: 500; font-size: 15px;
+    transition: color 0.2s;
+}
+.nav a:hover { color: var(--primary); }
+
+.actions { display: flex; align-items: center; gap: 20px; }
+
+#theme-toggle {
+    background: none; border: 1px solid var(--border);
+    cursor: pointer; font-size: 18px; padding: 5px 10px; border-radius: 8px;
+}
+
+.cart-btn { position: relative; text-decoration: none; }
+.badge {
+    position: absolute; top: -8px; right: -10px;
+    background: var(--primary); color: white;
+    font-size: 11px; padding: 2px 6px; border-radius: 10px;
+}
+
+/* Кнопки */
+.btn-primary {
+    background: var(--primary-grad); color: white;
+    border: none; padding: 12px 24px; border-radius: 10px;
+    font-weight: 600; cursor: pointer; transition: opacity 0.2s;
+}
+.btn-primary:hover { opacity: 0.9; }
+
+/* FOOTER */
+.footer {
+    background: var(--footer-bg); color: #fff;
+    padding: 60px 8% 30px; margin-top: 80px;
+}
+.footer-grid {
+    display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.5fr; gap: 40px;
+    max-width: 1440px; margin: 0 auto;
+}
+.footer h4 { margin-bottom: 20px; font-size: 18px; }
+.footer a { color: #999; text-decoration: none; display: block; margin-bottom: 12px; }
+.footer a:hover { color: #fff; }
+
+/* Когда у body есть атрибут dark, мы инвертируем цвета логотипа */
+[data-theme='dark'] .logo img {
+    filter: invert(1) brightness(2); /* Делает черный текст белым */
+}
+
+/* Также поправим иконку корзины, если она тоже темная */
+[data-theme='dark'] .cart-btn img {
+    filter: invert(1);
+}
+
+.footer-bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 40px;
+    padding-top: 20px;
+}
+.social-links a {
+    font-size: 20px;
+    margin-left: 15px;
+    filter: grayscale(1) brightness(2); /* Делаем их светлыми в темном футере */
 }
 
-.logo {
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.newsletter-form input {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #444;
+    background: #1a2235;
+    color: white;
+    flex-grow: 1;
+}
+
+.newsletter-form button {
+    background: var(--primary-grad);
+    border: none;
+    padding: 10px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.footer-brand img {
+    filter: invert(1) brightness(2);
+}
+
+.sidebar .btn-primary {
+    width: 100%;
+    margin-top: 10px;
+    background: linear-gradient(90deg, #FF6A00 0%, #EE2A7B 100%);
+    border: none;
+    box-shadow: 0 4px 12px rgba(238, 42, 123, 0.2);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between; /* Лого слева, навигация в центре, кнопки справа */
+    align-items: center;
+    max-width: 1440px;
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* Центрируем меню навигации */
+.nav {
+    display: flex;
+    gap: 30px;
+}
+
+/* Фикс для розового баннера (Hero) - чтобы он был как в Figma */
+.hero {
+    background: linear-gradient(90deg, #FF6A00 0%, #EE2A7B 100%);
+    color: white;
+    padding: 80px 10%; /* Больше отступов */
+    margin-bottom: 50px;
+}
+
+.hero h1 {
+    font-size: 48px;
+    font-weight: 800;
+    margin: 0;
+}
+
+.hero p {
+    font-size: 18px;
+    opacity: 0.9;
+    margin-top: 10px;
+}
+
+.cart-btn svg {
+    color: var(--text);
+    transition: transform 0.2s;
+}
+.cart-btn:hover svg {
+    transform: scale(1.1);
+    color: var(--primary);
+}
+
+.img-wrapper {
+    position: relative;
+    height: 250px; /* Фиксированная высота для всех карточек */
+    background: #fff;
     display: flex;
     align-items: center;
-    font-weight: 700;
-    font-size: 24px;
-    color: var(--dark-blue);
-    text-decoration: none;
+    justify-content: center;
+    padding: 20px;
+}
+
+.img-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Картинка впишется целиком без искажений */
+}
+
+/* Адаптивность для Global */
+@media (max-width: 1024px) {
+    .header, .footer { padding: 15px 5%; }
+    .nav { gap: 15px; }
+    .nav a { margin: 0 10px; font-size: 14px; }
+}
+
+@media (max-width: 768px) {
+    .header-content {
+        flex-wrap: wrap; /* Разрешаем перенос элементов */
+        gap: 15px;
+    }
+    .nav {
+        order: 3; /* Переносим меню в самый низ шапки */
+        width: 100%;
+        justify-content: center;
+        gap: 10px;
+        overflow-x: auto; /* Если не влезет, можно будет скроллить пальцем */
+        padding-bottom: 5px;
+    }
+    .nav a { margin: 0 5px; white-space: nowrap; }
+
+    .hero { padding: 40px 5%; text-align: center; }
+    .hero h1 { font-size: 28px; }
+
+    .footer-grid {
+        grid-template-columns: 1fr; /* Футер в одну колонку */
+        text-align: center;
+    }
+    .newsletter-form { flex-direction: column; }
+    .footer-bottom { flex-direction: column; gap: 15px; }
 }

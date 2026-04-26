@@ -2,84 +2,108 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>PawsStore - Shop All Products</title>
-    <!-- Подключаем CSS -->
+    <title>PawsStore - Shop All</title>
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/catalog.css">
 </head>
 <body>
+<!-- Вставка фрагмента шапки -->
+<div th:replace="~{fragments/layout :: header}"></div>
 
-<!-- Шапка сайта -->
-<header class="header">
-    <a href="/" class="logo">
-        <img src="/images/logo.png" alt="PawsStore" width="40">
-        <span>PawsStore</span>
-    </a>
-    <nav class="nav">
-        <a href="#">Shop</a>
-        <a href="#">Categories</a>
-        <a href="#">Deals</a>
-        <a href="#">About</a>
-    </nav>
-    <div class="header-icons">
-        <button class="icon-btn search-btn">🔍</button>
-        <a href="/cart" class="icon-btn cart-btn">
-            🛒 <span class="cart-badge">0</span>
-        </a>
-    </div>
-</header>
-
-<!-- Розово-оранжевый баннер как в макете -->
-<section class="hero-banner">
-    <div class="container">
-        <h1>Shop All Products</h1>
+<section class="hero">
+    <div class="hero-text">
+        <h1 th:text="#{nav.shop}">Shop All Products</h1>
         <p>Discover the best products for your furry friends</p>
     </div>
 </section>
 
-<main class="catalog-container">
-    <!-- Левая колонка: Фильтры (сделаем их позже функциональными) -->
-    <aside class="filters">
-        <h3>Filters</h3>
-        <div class="filter-group">
-            <label>Rating</label>
-            <div><input type="checkbox"> 5+ Stars</div>
-            <div><input type="checkbox"> 4+ Stars</div>
-        </div>
-        <div class="filter-group">
-            <label>Price Range</label>
-            <div class="price-inputs">
-                <input type="number" placeholder="Min">
-                <span>-</span>
-                <input type="number" placeholder="Max">
+<main class="catalog-main">
+    <!-- БОКОВАЯ ПАНЕЛЬ (ФИЛЬТРЫ) -->
+    <aside class="sidebar">
+        <!-- Форма отправляет GET запрос на сервер при нажатии "Apply" -->
+        <form id="filterForm" action="/" method="get">
+            <h3 th:text="#{filter.title}">Filters</h3>
+
+            <!-- Фильтр по рейтингу -->
+            <div class="filter-section">
+                <label th:text="#{filter.rating}">Rating</label>
+                <div class="checkbox-group">
+                    <!-- Проверка th:checked: если в URL есть параметр minRating=5, чекбокс будет нажат -->
+                    <label><input type="checkbox" name="minRating" value="5" th:checked="${param.minRating != null && param.minRating[0] == '5'}"> 5 Stars</label>
+                    <label><input type="checkbox" name="minRating" value="4" th:checked="${param.minRating != null && param.minRating[0] == '4'}"> 4+ Stars</label>
+                </div>
             </div>
-        </div>
+
+            <!-- Фильтр по цене -->
+            <div class="filter-section">
+                <label th:text="#{filter.price}">Price Range</label>
+                <div class="price-inputs">
+                    <!-- th:value подставляет текущие значения из URL, чтобы они не стирались -->
+                    <input type="number" name="minPrice" th:value="${param.minPrice}" placeholder="Min">
+                    <input type="number" name="maxPrice" th:value="${param.maxPrice}" placeholder="Max">
+                </div>
+            </div>
+
+            <button type="submit" class="btn-primary" th:text="#{filter.apply}">Apply</button>
+        </form>
     </aside>
 
-    <!-- Правая колонка: Сетка товаров -->
-    <section class="products-grid">
-        <!-- Thymeleaf Цикл: для каждого 'product' в списке 'products' -->
-        <div class="product-card" th:each="product : ${products}">
-            <div class="product-image-wrapper">
-                <!-- Используем th:src для динамического пути к картинке -->
-                <img th:src="${product.imageUrl}" th:alt="${product.name}">
-                <span class="price-tag" th:text="'$' + ${product.price}">$0.00</span>
+    <section class="content">
+        <!-- Тулбар с сортировкой -->
+        <div class="toolbar">
+            <span th:text="${products.size()} + ' products'">0 products</span>
+            <div class="sort">
+                <span th:text="#{sort.label}">Sort by:</span>
+
+                <!-- form="filterForm" связывает эти селекты с формой в сайдбаре.
+                     onchange="this.form.submit()" автоматически обновляет страницу при выборе -->
+                <select name="sortBy" form="filterForm" onchange="this.form.submit()">
+                    <option value="name" th:selected="${param.sortBy == null || param.sortBy[0] == 'name'}">Name (A-Z)</option>
+                    <option value="price" th:selected="${param.sortBy != null && param.sortBy[0] == 'price'}">Price</option>
+                    <option value="rating" th:selected="${param.sortBy != null && param.sortBy[0] == 'rating'}">Rating</option>
+                </select>
+
+                <select name="direction" form="filterForm" onchange="this.form.submit()">
+                    <option value="asc" th:selected="${param.direction == null || param.direction[0] == 'asc'}">↑ Low to High</option>
+                    <option value="desc" th:selected="${param.direction != null && param.direction[0] == 'desc'}">↓ High to Low</option>
+                </select>
             </div>
-            <div class="product-info">
-                <h4 th:text="${product.name}">Product Name</h4>
-                <div class="rating">
-                    <!-- Простой вывод рейтинга звездами -->
-                    <span class="stars">⭐⭐⭐⭐☆</span>
-                    <span class="review-count" th:text="'(' + ${product.reviews} + ')'">(0)</span>
-                </div>
+        </div>
+
+        <!-- Сетка товаров (Цикл по списку products) -->
+        <div class="products-grid">
+            <div class="card" th:each="p : ${products}">
+                <a th:href="@{'/product/' + ${p.id}}">
+                    <div class="img-wrapper">
+                        <img th:src="${p.imageUrl}" th:alt="${p.nameEn}">
+                        <span class="price-pill" th:text="'$' + ${p.price}">$0.00</span>
+                    </div>
+                    <div class="card-body">
+                        <!-- Локализация: если язык браузера RU, берем поле nameRu, иначе nameEn -->
+                        <h4 th:text="${#locale.language == 'ru' ? p.nameRu : p.nameEn}">Product Name</h4>
+
+                        <div class="category-label"
+                             th:text="${#locale.language == 'ru' ? p.categoryRu : p.categoryEn}">Category</div>
+
+                        <!-- Отрисовка звезд рейтинга (от 1 до 5) -->
+                        <div class="rating">
+                            <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                <!-- Подкрашиваем золотым, если номер звезды <= рейтинга товара -->
+                                <span th:style="${p.rating >= i ? 'color: #FFB800' : 'color: #ccc'}">★</span>
+                            </span>
+                            <span class="review-count" th:text="'(' + ${p.reviewsCount} + ')'"></span>
+                        </div>
+                    </div>
+                </a>
             </div>
         </div>
     </section>
 </main>
 
-<footer class="footer">
-    <p>&copy; 2026 PawsStore. All rights reserved.</p>
-</footer>
-
+<div th:replace="~{fragments/layout :: footer}"></div>
+<!-- Скрипты для работы корзины и темы -->
+<script src="/js/cart.js"></script>
+<script src="/js/cart-page.js"></script>
+<script src="/js/theme.js"></script>
 </body>
 </html>

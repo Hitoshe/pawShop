@@ -6,25 +6,52 @@ import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 /**
- * Класс-сущность товара.
- * Hibernate автоматически создаст таблицу "products" в БД на основе этого класса.
+ * Сущность товара.
+ * Поля дублируются (Ru/En) для обеспечения мультиязычности без использования сложных словарей.
  */
 @Entity
 @Table(name = "products")
-@Data // Lombok сам создаст геттеры, сеттеры и toString
-@NoArgsConstructor // Пустой конструктор
-@AllArgsConstructor // Конструктор со всеми полями
+@Data // Генерирует геттеры, сеттеры, toString и equals/hashCode через Lombok
+@NoArgsConstructor // Пустой конструктор (нужен для JPA)
+@AllArgsConstructor // Конструктор со всеми полями (используется в DataInitializer)
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;        // Название товара
-    private String description; // Описание
-    private Double price;       // Цена
-    private Double rating;      // Рейтинг (звездочки)
-    private Integer reviews;    // Количество отзывов
-    private String imageUrl;    // Путь к картинке
-    private String category;    // Категория (для фильтров)
+    // Текстовые данные на двух языках
+    private String nameEn;
+    private String nameRu;
+    private String categoryEn;
+    private String categoryRu;
+
+    @Column(length = 500)
+    private String shortDescriptionEn;
+    @Column(length = 500)
+    private String shortDescriptionRu;
+
+    @Column(length = 2000)
+    private String fullDescriptionEn;
+    @Column(length = 2000)
+    private String fullDescriptionRu;
+
+    // Числовые данные
+    private Double price;
+    private Double oldPrice;
+    private Double rating;
+    private Integer reviewsCount;
+
+    // Ссылки на изображения (хранятся в /static/images/)
+    private String imageUrl;
+    private String imageUrl2;
+    private String imageUrl3;
+
+    // Технические характеристики
+    private String materialEn;
+    private String materialRu;
+    private String dimensionsEn;
+    private String dimensionsRu;
+    private String weightLimitEn;
+    private String weightLimitRu;
 }
