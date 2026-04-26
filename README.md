@@ -17,7 +17,7 @@ PawsStore is a full-stack e-commerce web application designed for pet lovers. Bu
 
 ## 🛠 Tech Stack
 
-*   **Backend**: Java 17, Spring Boot 3.x, Spring Data JPA.
+*   **Backend**: Java 21, Spring Boot 3.x, Spring Data JPA.
 *   **Database**: H2 (In-memory for development) / Easily switchable to PostgreSQL/MySQL.
 *   **Frontend**: Thymeleaf (Template Engine), Modern CSS (Flexbox & Grid), Vanilla JavaScript.
 *   **Security & Logic**: LocaleChangeInterceptors, CookieLocaleResolvers.
