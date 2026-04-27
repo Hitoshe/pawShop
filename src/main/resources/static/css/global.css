@@ -238,3 +238,176 @@ body {
     .newsletter-form { flex-direction: column; }
     .footer-bottom { flex-direction: column; gap: 15px; }
 }
+
+/* FOOTER 1 В 1 */
+.footer {
+    background-color: #0A1121; /* Очень темный синий/черный */
+    color: #ffffff;
+    padding: 80px 0 40px;
+    margin-top: 100px;
+    font-family: 'Inter', sans-serif;
+}
+
+.footer-content {
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 0 8%;
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr; /* Пропорции колонок */
+    gap: 40px;
+    margin-bottom: 60px;
+}
+
+/* Колонки */
+.footer-logo img {
+    height: 40px;
+    margin-bottom: 20px;
+}
+
+.footer-slogan {
+    color: #9CA3AF;
+    font-size: 15px;
+    line-height: 1.6;
+    max-width: 280px;
+}
+
+.footer-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #ffffff;
+}
+
+.footer-links {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 12px;
+}
+
+.footer-links a {
+    color: #9CA3AF;
+    text-decoration: none;
+    font-size: 15px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: #ffffff;
+}
+
+/* Newsletter */
+.newsletter-desc {
+    color: #9CA3AF;
+    font-size: 15px;
+    margin-bottom: 20px;
+}
+
+.newsletter-form {
+    display: flex;
+    gap: 10px;
+}
+
+.newsletter-form input {
+    flex: 1;
+    background: #1F2937; /* Темно-серый фон инпута */
+    border: 1px solid #374151;
+    border-radius: 6px;
+    padding: 12px 15px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+}
+
+.newsletter-form button {
+    background: #FF6A00; /* Чистый оранжевый */
+    color: white;
+    border: none;
+    padding: 0 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.newsletter-form button:hover {
+    background: #e65f00;
+}
+
+/* Нижняя панель */
+.footer-bottom {
+    border-top: 1px solid #1F2937;
+    padding-top: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.copyright p {
+    color: #9CA3AF;
+    font-size: 14px;
+}
+
+.social-links {
+    display: flex;
+    gap: 20px;
+}
+
+.social-links a {
+    color: #9CA3AF;
+    transition: color 0.2s;
+}
+
+.social-links a:hover {
+    color: #ffffff;
+}
+
+/* ИНВЕРСИЯ ЛОГОТИПА В ФУТЕРЕ */
+/* Так как футер всегда темный, логотип внутри него всегда инвертируем в белый */
+.footer-logo-img {
+    filter: invert(1) brightness(2);
+    height: 40px;
+    margin-bottom: 20px;
+}
+
+/* Социальные иконки тоже должны быть светлыми по умолчанию в футере */
+.social-links a svg {
+    fill: #9CA3AF;
+    transition: fill 0.2s, transform 0.2s;
+}
+
+.social-links a:hover svg {
+    fill: #ffffff;
+    transform: translateY(-3px);
+}
+
+/* Если логотип в шапке (header) тоже черный, то для темной темы инвертируем и его */
+[data-theme='dark'] .logo img {
+    filter: invert(1) brightness(2);
+}
+
+/* Адаптивность для мобилок */
+@media (max-width: 1024px) {
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+    .footer-bottom {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+    }
+}
