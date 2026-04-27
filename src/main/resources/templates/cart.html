@@ -10,40 +10,94 @@
 <div th:replace="~{fragments/layout :: header}"></div>
 
 <main class="cart-container">
-    <h1 th:text="#{cart.title} ?: 'Shopping Bag'">Shopping Bag</h1>
+    <!-- Верхняя часть: Заголовок и Шаги -->
+    <div class="cart-header-section">
+        <div class="title-group">
+            <h1 class="magenta-title">Shopping Bag</h1>
+            <p id="ready-count">0 items ready for checkout</p>
+        </div>
+        <div class="cart-steps">
+            <div class="step active"><span class="step-num">1</span> Cart</div>
+            <div class="step-divider">❯</div>
+            <div class="step"><span class="step-num">2</span> Checkout</div>
+            <div class="step-divider">❯</div>
+            <div class="step"><span class="step-num">3</span> Complete</div>
+        </div>
+    </div>
 
-    <div class="cart-wrapper">
-        <!-- БЛОК ТОВАРОВ: Сюда cart-page.js вставит HTML для каждого товара из localStorage -->
-        <div id="cart-items" class="cart-items-list"></div>
+    <!-- Баннер бесплатной доставки -->
+    <div class="free-shipping-banner" id="shipping-banner">
+        <div class="banner-left">
+            <span class="tag-icon">🏷️</span>
+            <span>Free shipping on orders over <b>$50</b></span>
+        </div>
+        <div class="banner-right">
+            <span class="qualified">✔ Qualified!</span>
+        </div>
+    </div>
 
-        <!-- ИТОГОВАЯ ИНФОРМАЦИЯ -->
-        <aside class="order-summary">
-            <h3 th:text="#{cart.summary} ?: 'Order Summary'">Order Summary</h3>
+    <div class="cart-grid">
+        <!-- Левая часть: Список товаров -->
+        <div id="cart-items" class="cart-items-list">
+            <!-- Заполнится через JS -->
+        </div>
 
-            <!-- Промокод (логика в JS) -->
-            <div class="promo-block">
-                <input type="text" id="promo-input" placeholder="Promo code">
-                <button onclick="applyPromo()" class="btn-secondary" th:text="#{cart.apply}">Apply</button>
+        <!-- Правая часть: Итоги заказа -->
+        <aside class="order-summary-card">
+            <div class="summary-header">
+                <h3>Order Summary</h3>
+                <p id="summary-count">0 items in your bag</p>
             </div>
 
-            <hr>
+            <div class="summary-body">
+                <div class="promo-section">
+                    <label><span class="tag-icon">🏷️</span> Promo Code</label>
+                    <div class="promo-input-group">
+                        <input type="text" id="promo-input" placeholder="Enter code">
+                        <button onclick="applyPromo()" class="btn-dark">Apply</button>
+                    </div>
+                </div>
 
-            <!-- Подсчет стоимости -->
-            <div class="summary-row">
-                <span>Subtotal:</span>
-                <span id="subtotal">$0</span>
-            </div>
-            <div id="discount-row" class="summary-row" style="display:none; color: #EE2A7B;">
-                <span>Discount (10%):</span>
-                <span id="discount-val">-$0</span>
-            </div>
-            <div class="summary-row total">
-                <strong>Total:</strong>
-                <strong id="final-total">$0</strong>
-            </div>
+                <div class="calculation-rows">
+                    <div class="calc-row">
+                        <span>Subtotal</span>
+                        <span id="subtotal" class="bold-val">$0.00</span>
+                    </div>
+                    <div class="calc-row">
+                        <span>Tax (8%)</span>
+                        <span id="tax-val" class="bold-val">$0.00</span>
+                    </div>
+                    <hr>
+                    <div class="calc-row total-row">
+                        <strong>Total</strong>
+                        <strong id="final-total" class="orange-text">$0.00</strong>
+                    </div>
+                </div>
 
-            <!-- Заглушка кнопки оформления -->
-            <button class="btn-primary checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+                <!-- Инфо-блоки -->
+                <div class="info-blocks">
+                    <div class="info-item blue-bg">
+                        <div class="info-icon">🕒</div>
+                        <div class="info-text">
+                            <b>Delivery Time</b>
+                            <span>3-5 business days</span>
+                        </div>
+                    </div>
+                    <div class="info-item purple-bg">
+                        <div class="info-icon">📍</div>
+                        <div class="info-text">
+                            <b>Shipping to</b>
+                            <span>123 Main St, New York...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-checkout-gradient" onclick="checkout()">
+                    <span class="btn-icon">💳</span> Proceed to Checkout
+                </button>
+
+                <a href="/" class="continue-link">← Continue Shopping</a>
+            </div>
         </aside>
     </div>
 </main>

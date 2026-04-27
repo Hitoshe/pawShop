@@ -2,12 +2,11 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>PawsStore - Shop All</title>
+    <title>PawsStore - Catalog</title>
     <link rel="stylesheet" href="/css/global.css">
     <link rel="stylesheet" href="/css/catalog.css">
 </head>
 <body>
-<!-- Вставка фрагмента шапки -->
 <div th:replace="~{fragments/layout :: header}"></div>
 
 <section class="hero">
@@ -18,92 +17,130 @@
 </section>
 
 <main class="catalog-main">
-    <!-- БОКОВАЯ ПАНЕЛЬ (ФИЛЬТРЫ) -->
+    <!-- БОКОВАЯ ПАНЕЛЬ ФИЛЬТРОВ -->
     <aside class="sidebar">
-        <!-- Форма отправляет GET запрос на сервер при нажатии "Apply" -->
-        <form id="filterForm" action="/" method="get">
-            <h3 th:text="#{filter.title}">Filters</h3>
+        <form id="filterForm">
+            <h3 class="sidebar-title">Filters</h3>
 
-            <!-- Фильтр по рейтингу -->
+            <!-- Секция рейтинга -->
             <div class="filter-section">
-                <label th:text="#{filter.rating}">Rating</label>
-                <div class="checkbox-group">
-                    <!-- Проверка th:checked: если в URL есть параметр minRating=5, чекбокс будет нажат -->
-                    <label><input type="checkbox" name="minRating" value="5" th:checked="${param.minRating != null && param.minRating[0] == '5'}"> 5 Stars</label>
-                    <label><input type="checkbox" name="minRating" value="4" th:checked="${param.minRating != null && param.minRating[0] == '4'}"> 4+ Stars</label>
+                <h4 class="section-title">Rating</h4>
+                <div class="checkbox-list">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="ratings" value="5">
+                        <span>5 Stars</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="ratings" value="4">
+                        <span>4 Stars</span>
+                    </label>
+                    <label class="custom-checkbox">
+                        <input type="checkbox" name="ratings" value="3">
+                        <span>3 Stars</span>
+                    </label>
                 </div>
             </div>
 
-            <!-- Фильтр по цене -->
+            <!-- Секция цены -->
             <div class="filter-section">
-                <label th:text="#{filter.price}">Price Range</label>
-                <div class="price-inputs">
-                    <!-- th:value подставляет текущие значения из URL, чтобы они не стирались -->
-                    <input type="number" name="minPrice" th:value="${param.minPrice}" placeholder="Min">
-                    <input type="number" name="maxPrice" th:value="${param.maxPrice}" placeholder="Max">
+                <h4 class="section-title">Price Range</h4>
+                <div class="price-container">
+                    <div class="price-field">
+                        <span class="field-label">Min</span>
+                        <div class="input-wrapper">
+                            <span class="currency">$</span>
+                            <input type="text" name="minPrice" value="0">
+                        </div>
+                    </div>
+
+                    <span class="price-divider">—</span>
+
+                    <div class="price-field">
+                        <span class="field-label">Max</span>
+                        <div class="input-wrapper">
+                            <span class="currency">$</span>
+                            <input type="text" name="maxPrice" value="1000">
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <button type="submit" class="btn-primary" th:text="#{filter.apply}">Apply</button>
         </form>
     </aside>
 
     <section class="content">
-        <!-- Тулбар с сортировкой -->
+        <!-- ТУЛБАР -->
         <div class="toolbar">
-            <span th:text="${products.size()} + ' products'">0 products</span>
+            <span id="product-count" th:text="${products.size()} + ' products'">0 products</span>
             <div class="sort">
                 <span th:text="#{sort.label}">Sort by:</span>
-
-                <!-- form="filterForm" связывает эти селекты с формой в сайдбаре.
-                     onchange="this.form.submit()" автоматически обновляет страницу при выборе -->
-                <select name="sortBy" form="filterForm" onchange="this.form.submit()">
-                    <option value="name" th:selected="${param.sortBy == null || param.sortBy[0] == 'name'}">Name (A-Z)</option>
-                    <option value="price" th:selected="${param.sortBy != null && param.sortBy[0] == 'price'}">Price</option>
-                    <option value="rating" th:selected="${param.sortBy != null && param.sortBy[0] == 'rating'}">Rating</option>
+                <select name="sortBy" id="sortBySelector">
+                    <option value="name">Name (A-Z)</option>
+                    <option value="price">Price</option>
+                    <option value="rating">Rating</option>
                 </select>
-
-                <select name="direction" form="filterForm" onchange="this.form.submit()">
-                    <option value="asc" th:selected="${param.direction == null || param.direction[0] == 'asc'}">↑ Low to High</option>
-                    <option value="desc" th:selected="${param.direction != null && param.direction[0] == 'desc'}">↓ High to Low</option>
+                <select name="direction" id="directionSelector">
+                    <option value="asc">↑ Low to High</option>
+                    <option value="desc">↓ High to Low</option>
                 </select>
             </div>
         </div>
 
-        <!-- Сетка товаров (Цикл по списку products) -->
-        <div class="products-grid">
+        <!-- СЕТКА ТОВАРОВ -->
+        <div class="products-grid" id="products-grid">
             <div class="card" th:each="p : ${products}">
-                <a th:href="@{'/product/' + ${p.id}}">
-                    <div class="img-wrapper">
+                <div class="img-wrapper">
+                    <a th:href="@{'/product/' + ${p.id}}">
                         <img th:src="${p.imageUrl}" th:alt="${p.nameEn}">
-                        <span class="price-pill" th:text="'$' + ${p.price}">$0.00</span>
-                    </div>
-                    <div class="card-body">
-                        <!-- Локализация: если язык браузера RU, берем поле nameRu, иначе nameEn -->
-                        <h4 th:text="${#locale.language == 'ru' ? p.nameRu : p.nameEn}">Product Name</h4>
+                    </a>
 
-                        <div class="category-label"
-                             th:text="${#locale.language == 'ru' ? p.categoryRu : p.categoryEn}">Category</div>
+                    <!-- Оранжевая пилюля цены (видна всегда) -->
+                    <span class="price-pill" th:text="'$' + ${p.price}">$0.00</span>
 
-                        <!-- Отрисовка звезд рейтинга (от 1 до 5) -->
-                        <div class="rating">
-                            <span th:each="i : ${#numbers.sequence(1, 5)}">
-                                <!-- Подкрашиваем золотым, если номер звезды <= рейтинга товара -->
-                                <span th:style="${p.rating >= i ? 'color: #FFB800' : 'color: #ccc'}">★</span>
-                            </span>
-                            <span class="review-count" th:text="'(' + ${p.reviewsCount} + ')'"></span>
+                    <!-- ВСПЛЫВАЮЩАЯ КАРТОЧКА ПРИ НАВЕДЕНИИ -->
+                    <div class="hover-card">
+                        <div class="hover-content">
+                            <h4 th:text="${#locale.language == 'ru' ? p.nameRu : p.nameEn}">Product Name</h4>
+                            <div class="rating">
+                                <span th:each="i : ${#numbers.sequence(1, 5)}">
+                                    <span th:style="${p.rating >= i ? 'color: #FFB800' : 'color: #ccc'}">★</span>
+                                </span>
+                                <span class="review-count" th:text="'(' + ${p.reviewsCount} + ')'"></span>
+                            </div>
+                            <div class="hover-bottom">
+                                <span class="hover-price" th:text="'$' + ${p.price}">$0.00</span>
+                                <!-- Кнопка добавления в корзину (быстрая покупка) -->
+                                <button class="quick-add-btn"
+                                        th:onclick="addToCart([[${p.id}]], [[${#locale.language == 'ru' ? p.nameRu : p.nameEn}]], [[${p.price}]], [[${p.imageUrl}]])">
+                                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="9" cy="21" r="1"></circle>
+                                        <circle cx="20" cy="21" r="1"></circle>
+                                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                                    </svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </a>
+                </div>
+
+                <!-- НИЖНЯЯ ЧАСТЬ КАРТОЧКИ (ВСЕГДА ВИДНА) -->
+                <div class="card-body">
+                    <h4 th:text="${#locale.language == 'ru' ? p.nameRu : p.nameEn}">Product Name</h4>
+                    <div class="rating-faint">
+                        <span th:each="i : ${#numbers.sequence(1, 5)}">
+                            <span th:style="${p.rating >= i ? 'color: #FFB800' : 'color: #ccc'}">★</span>
+                        </span>
+                        <span class="review-count" th:text="'(' + ${p.reviewsCount} + ')'"></span>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 </main>
 
 <div th:replace="~{fragments/layout :: footer}"></div>
-<!-- Скрипты для работы корзины и темы -->
+
+<script src="/js/catalog-reactive.js"></script>
 <script src="/js/cart.js"></script>
-<script src="/js/cart-page.js"></script>
 <script src="/js/theme.js"></script>
 </body>
 </html>

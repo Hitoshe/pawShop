@@ -123,6 +123,340 @@
     box-shadow: 0 4px 15px rgba(238, 42, 123, 0.3);
 }
 
+/* catalog.css */
+
+/* Основная сетка: строго 3 колонки на десктопе */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* Ровно 3 товара в ряд */
+    gap: 25px;
+}
+
+/* Стили карточки из скриншота */
+.card {
+    background: #fff;
+    border-radius: 12px;
+    border: 1px solid #eee;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.img-wrapper {
+    height: 350px; /* Высокая область картинки */
+    background: #f3f3f3;
+    position: relative;
+}
+
+.price-pill {
+    background: #FF6A00; /* Оранжевый из скриншота */
+    top: 15px;
+    right: 15px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+}
+
+.card-body {
+    padding: 15px;
+    background: #fff;
+}
+
+.card-body h4 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* Сайдбар фильтров как на скрине */
+.sidebar {
+    background: #fff;
+    border: 1px solid #eee;
+    border-radius: 12px;
+    padding: 20px;
+}
+
+.filter-section label {
+    font-weight: 600;
+    margin-bottom: 15px;
+    display: block;
+}
+
+.price-inputs {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.price-inputs input {
+    width: 70px;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    text-align: center;
+}
+
+.img-wrapper {
+    background: #ffffff !important; /* Чисто белый фон как на скрине */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    padding: 20px;
+    position: relative;
+}
+
+.img-wrapper img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain; /* Картинка вписывается полностью */
+}
+
+/* Сетка ровно по 3 в ряд */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+/* Общий контейнер сайдбара */
+.sidebar {
+    width: 280px;
+    background: #ffffff;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    padding: 24px;
+    font-family: 'Inter', sans-serif;
+}
+
+.sidebar-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 32px;
+}
+
+.section-title {
+    font-size: 16px;
+    font-weight: 700;
+    color: #111827;
+    margin-bottom: 16px;
+}
+
+.filter-section {
+    margin-bottom: 32px;
+}
+
+/* Стили чекбоксов */
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4B5563; /* Цвет текста как на скрине */
+}
+
+.custom-checkbox input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: #FF6A00; /* Цвет при выборе */
+}
+
+/* Стили диапазона цен */
+.price-container {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.price-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+}
+
+.field-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #6B7280;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: #F9FAFB;
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    padding: 8px 12px;
+    transition: border-color 0.2s;
+}
+
+.input-wrapper:focus-within {
+    border-color: #FF6A00;
+}
+
+.currency {
+    color: #9CA3AF;
+    font-size: 14px;
+    margin-right: 4px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: #111827;
+    outline: none;
+    padding: 0;
+}
+
+.price-divider {
+    color: #D1D5DB;
+    padding-bottom: 12px;
+}
+
+/* Уменьшаем вертикальный отступ между строками (5 звезд, 4 звезды и т.д.) */
+.checkbox-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px; /* Было 12px, уменьшили в два раза */
+}
+
+/* Уменьшаем горизонтальный отступ между самим квадратиком и текстом "5 Stars" */
+.custom-checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Было 12px, сделали компактнее */
+    cursor: pointer;
+    font-size: 14px;
+    color: #4B5563;
+    line-height: 1; /* Чтобы текст был точно по центру чекбокса */
+}
+
+/* Чуть уменьшим размер самого квадратика для изящности */
+.custom-checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    border: 1px solid #D1D5DB;
+    border-radius: 4px;
+    cursor: pointer;
+    margin: 0; /* Убираем лишние внешние отступы браузера */
+}
+
+/* Основная карточка */
+.card {
+    position: relative;
+    background: #fff;
+    border-radius: 20px;
+    border: 2px solid transparent; /* Заготовка под оранжевый контур */
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* Эффект при наведении на всю карточку */
+.card:hover {
+    border-color: #FF6A00; /* Оранжевый контур */
+    box-shadow: 0 10px 30px rgba(255, 106, 0, 0.15);
+}
+
+.img-wrapper {
+    position: relative;
+    height: 320px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+}
+
+/* Скрытая карточка внутри */
+.hover-card {
+    position: absolute;
+    bottom: 15px;
+    left: 10px;
+    right: 10px;
+    background: #fff;
+    border-radius: 15px;
+    padding: 15px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+
+    /* Начальное состояние: скрыта и чуть ниже */
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(15px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+/* Показываем при наведении */
+.card:hover .hover-card {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Внутренние стили всплывающей карточки */
+.hover-card h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    color: #111827;
+}
+
+.hover-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+}
+
+.hover-price {
+    font-size: 22px;
+    font-weight: 800;
+    color: #FF6A00;
+}
+
+/* Круглая кнопка корзины */
+.quick-add-btn {
+    background: #FF6A00;
+    color: white;
+    border: none;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+    box-shadow: 0 4px 12px rgba(255, 106, 0, 0.3);
+}
+
+.quick-add-btn:hover {
+    transform: scale(1.1);
+    background: #EE2A7B; /* Розовый градиент при наведении на кнопку */
+}
+
+/* Нижний текст основной карточки (делаем чуть бледнее как на скрине) */
+.card-body h4 {
+    font-size: 15px;
+    color: #9CA3AF;
+    margin: 10px 0 5px 0;
+}
+
 
 /* Адаптивность для Каталога */
 @media (max-width: 992px) {

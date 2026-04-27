@@ -1,133 +1,137 @@
 /**
  * ГЛОБАЛЬНЫЕ ЭЛЕМЕНТЫ ИНТЕРФЕЙСА
- * Выбираем элементы из cart.html, куда мы будем вставлять данные.
  */
-const itemsContainer = document.getElementById('cart-items'); // Контейнер для списка товаров
-const subtotalEl = document.getElementById('subtotal');       // Поле "Промежуточный итог"
-const totalEl = document.getElementById('final-total');       // Поле "Итоговая сумма"
-const discountRow = document.getElementById('discount-row');   // Строка с информацией о скидке (скрыта по умолчанию)
-const discountValEl = document.getElementById('discount-val'); // Значение скидки в долларах
+const itemsContainer = document.getElementById('cart-items');
+const subtotalEl = document.getElementById('subtotal');
+const taxEl = document.getElementById('tax-val');             // Добавили для налога
+const totalEl = document.getElementById('final-total');
+const discountRow = document.getElementById('discount-row');
+const discountValEl = document.getElementById('discount-val');
 
-// Состояние промокода (действует только пока открыта страница)
+// Новые элементы для счетчиков и баннера
+const readyCountEl = document.getElementById('ready-count');
+const summaryCountEl = document.getElementById('summary-count');
+const shippingBanner = document.getElementById('shipping-banner');
+
 let isDiscountApplied = false;
 
 /**
  * 1. ОТРИСОВКА СПИСКА ТОВАРОВ
- * Основная функция, которая строит HTML-код корзины на основе массива 'cart'.
  */
 function renderCart() {
-    // Если мы не на странице корзины (контейнер не найден), выходим из функции
     if (!itemsContainer) return;
 
-    // Очищаем текущий контент перед новой отрисовкой
     itemsContainer.innerHTML = '';
 
-    // ПРОВЕРКА: Если корзина пуста
     if (cart.length === 0) {
         itemsContainer.innerHTML = `
-            <div class="cart-empty" style="text-align: center; padding: 40px;">
+            <div class="cart-empty" style="text-align: center; padding: 40px; grid-column: span 2;">
                 <h2>${document.documentElement.lang === 'ru' ? 'Ваша корзина пуста' : 'Your bag is empty'}</h2>
                 <a href="/" class="btn-primary" style="display:inline-block; margin-top:20px; text-decoration:none;">
                    ${document.documentElement.lang === 'ru' ? 'Вернуться в магазин' : 'Continue Shopping'}
                 </a>
             </div>`;
-        updateSummary(); // Обнуляем итоги
+        updateSummary();
         return;
     }
 
-    // ГЕНЕРАЦИЯ КАРТОЧЕК ТОВАРОВ
-    // Проходим по каждому элементу массива cart
     cart.forEach((item, index) => {
+        // Расчет цены для конкретной позиции
+        const itemTotal = (item.price * item.quantity).toFixed(2);
+
         itemsContainer.innerHTML += `
             <div class="cart-item">
                 <img src="${item.img}" alt="${item.name}">
                 <div class="item-details">
                     <h4>${item.name}</h4>
-                    <p class="item-price">$${item.price.toFixed(2)}</p>
+                    <p style="color: #999; font-size: 13px;">${document.documentElement.lang === 'ru' ? 'Товары для животных' : 'Pet Supplies'}</p>
                 </div>
-                <!-- Управление количеством -->
                 <div class="item-qty-controls">
                     <button onclick="updateQty(${index}, -1)">-</button>
                     <span>${item.quantity}</span>
                     <button onclick="updateQty(${index}, 1)">+</button>
                 </div>
-                <!-- Кнопка удаления (иконка корзины) -->
+                <!-- Блок цены: общая сумма и цена за штуку -->
+                <div class="item-price-block" style="text-align: right; padding: 0 20px; min-width: 120px;">
+                    <span style="display: block; font-size: 18px; font-weight: 800; color: #FF6A00;">$${itemTotal}</span>
+                    <span style="font-size: 12px; color: #999;">$${item.price.toFixed(2)} ${document.documentElement.lang === 'ru' ? 'каждый' : 'each'}</span>
+                </div>
                 <button class="remove-btn" onclick="removeItem(${index})">🗑️</button>
             </div>`;
     });
 
-    // После отрисовки списка обновляем итоговые цифры (сумму)
     updateSummary();
 }
 
 /**
- * 2. ИЗМЕНЕНИЕ КОЛИЧЕСТВА (+ / -)
- * @param {number} idx - индекс товара в массиве cart
- * @param {number} delta - на сколько изменить (1 или -1)
+ * 2. ИЗМЕНЕНИЕ КОЛИЧЕСТВА
  */
 function updateQty(idx, delta) {
     cart[idx].quantity += delta;
-
-    // Не позволяем количеству быть меньше 1
     if (cart[idx].quantity < 1) cart[idx].quantity = 1;
 
-    saveCart();    // Сохраняем в localStorage (функция из cart.js)
-    updateBadge(); // Обновляем кружок в шапке (функция из cart.js)
-    renderCart();  // Перерисовываем список на странице
+    saveCart();
+    updateBadge();
+    renderCart();
 }
 
 /**
  * 3. УДАЛЕНИЕ ТОВАРА
- * @param {number} idx - индекс удаляемого элемента
  */
 function removeItem(idx) {
-    // Удаляем 1 элемент по указанному индексу
     cart.splice(idx, 1);
-
-    saveCart();    // Сохраняем изменения
-    updateBadge(); // Обновляем кружок в шапке
-    renderCart();  // Перерисовываем корзину
+    saveCart();
+    updateBadge();
+    renderCart();
 }
 
 /**
- * 4. РАСЧЕТ ИТОГОВ И СКИДКИ
- * Считает общую сумму всех товаров и применяет промокод, если он есть.
+ * 4. РАСЧЕТ ИТОГОВ (ДОБАВЛЕН НАЛОГ И СЧЕТЧИКИ)
  */
 function updateSummary() {
-    // Считаем сумму: цена каждого товара * его количество
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    let finalTotal = subtotal;
 
-    // Логика скидки
+    // Считаем скидку
+    let discount = 0;
     if (isDiscountApplied) {
-        const discount = subtotal * 0.1; // Фиксированная скидка 10%
-        finalTotal = subtotal - discount;
-
-        // Показываем строку скидки и записываем значение
+        discount = subtotal * 0.1;
         if (discountValEl) discountValEl.innerText = `-$${discount.toFixed(2)}`;
         if (discountRow) discountRow.style.display = 'flex';
     } else {
-        // Скрываем строку скидки, если промокод не введен
         if (discountRow) discountRow.style.display = 'none';
     }
 
-    // Выводим данные в соответствующие поля HTML
+    // РАСЧЕТ НАЛОГА 8%
+    const tax = (subtotal - discount) * 0.08;
+    const finalTotal = subtotal - discount + tax;
+
+    // Вывод цен
     if (subtotalEl) subtotalEl.innerText = `$${subtotal.toFixed(2)}`;
+    if (taxEl) taxEl.innerText = `$${tax.toFixed(2)}`; // Поле налога
     if (totalEl) totalEl.innerText = `$${finalTotal.toFixed(2)}`;
+
+    // ОБНОВЛЕНИЕ СЧЕТЧИКОВ ТОВАРОВ
+    const totalQty = cart.reduce((sum, item) => sum + item.quantity, 0);
+    const itemWord = document.documentElement.lang === 'ru' ? 'товар(ов)' : (totalQty === 1 ? 'item' : 'items');
+
+    if (readyCountEl) readyCountEl.innerText = `${totalQty} ${itemWord} ${document.documentElement.lang === 'ru' ? 'готово к оплате' : 'ready for checkout'}`;
+    if (summaryCountEl) summaryCountEl.innerText = `${totalQty} ${itemWord} ${document.documentElement.lang === 'ru' ? 'в вашей корзине' : 'in your bag'}`;
+
+    // БАННЕР ДОСТАВКИ (Qualified если > $50)
+    if (shippingBanner) {
+        shippingBanner.style.display = subtotal >= 50 ? 'flex' : 'none';
+    }
 }
 
 /**
  * 5. ПРИМЕНЕНИЕ ПРОМОКОДА
- * Срабатывает при клике на кнопку "Apply" в корзине.
  */
 function applyPromo() {
     const input = document.getElementById('promo-input');
-
-    // Проверяем код (в данном случае жестко прописан 'SAVE10')
-    if (input.value.trim().toUpperCase() === 'SAVE10') {
+    if (input && input.value.trim().toUpperCase() === 'SAVE10') {
         isDiscountApplied = true;
         alert(document.documentElement.lang === 'ru' ? 'Промокод применен!' : 'Promo code applied!');
-        renderCart(); // Перерисовываем, чтобы обновить итоговую сумму
+        renderCart();
     } else {
         alert(document.documentElement.lang === 'ru' ? 'Неверный код' : 'Invalid code');
     }
@@ -135,24 +139,17 @@ function applyPromo() {
 
 /**
  * 6. ОФОРМЛЕНИЕ ЗАКАЗА
- * Финальное действие: очистка данных и имитация покупки.
  */
 function checkout() {
     if (cart.length === 0) return;
-
-    alert(document.documentElement.lang === 'ru' ? 'Спасибо за заказ! Мы свяжемся с вами.' : 'Thank you for your order!');
-
-    // Полностью очищаем массив корзины
+    alert(document.documentElement.lang === 'ru' ? 'Спасибо за заказ!' : 'Thank you for your order!');
     cart = [];
-    saveCart();    // Перезаписываем пустую корзину в localStorage
-    updateBadge(); // Обнуляем кружок в шапке
-
-    // Редирект на главную страницу
+    saveCart();
+    updateBadge();
     window.location.href = '/';
 }
 
 /**
  * ИНИЦИАЛИЗАЦИЯ
- * Запускаем отрисовку корзины сразу после того, как браузер загрузил HTML.
  */
 document.addEventListener('DOMContentLoaded', renderCart);
