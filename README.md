@@ -1,7 +1,3 @@
-Вот полный и готовый файл README.md для твоего репозитория. Он включает все
-технические особенности: Java 21, Docker (PostgreSQL 15), мультиязычность и
-современный стек.
-
 🐾 PawsStore - Premium Pet Supplies E-commerce
 
 PawsStore is a robust, full-stack e-commerce platform built with Java 21 and
