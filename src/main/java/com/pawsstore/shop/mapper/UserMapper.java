@@ -15,7 +15,7 @@ public final class UserMapper {
         User user = new User();
         user.setEmail(request.email());
         user.setRole(UserRole.valueOf(request.role()));
-        user.setPasswordHash(request.passwordHash());
+        user.setPasswordHash(request.password());
         return user;
     }
 
