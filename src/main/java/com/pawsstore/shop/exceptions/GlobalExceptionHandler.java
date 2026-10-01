@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -34,6 +35,13 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(
                 new ErrorResponse("VALIDATION_ERROR", message, errors)
         );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleInvalidLogin(BadCredentialsException exception) {
+        return ResponseEntity.badRequest().body(new ErrorResponse("INVALID_CREDENTIALS",
+                "Неправильный логин или пароль",
+                new HashMap<>()));
     }
 
 
