@@ -34,7 +34,7 @@ public class JwtHelperTest {
 
     @Test
     void shouldGenerateToken() {
-        String token = jwtHelper.createToken(new HashMap<>(), userDetails.getUsername());
+        String token = jwtHelper.createToken(userDetails.getUsername());
 
         System.out.println(token);
 
@@ -45,7 +45,7 @@ public class JwtHelperTest {
 
     @Test
     void shouldExtractData() {
-        String token = jwtHelper.createToken(new HashMap<>(), userDetails.getUsername());
+        String token = jwtHelper.createToken(userDetails.getUsername());
 
         System.out.println(jwtHelper.extractExpirationTime(token));
 
@@ -54,13 +54,13 @@ public class JwtHelperTest {
 
     @Test
     void shouldValidateToken() {
-        String token = jwtHelper.createToken(new HashMap<>(), userDetails.getUsername());
+        String token = jwtHelper.createToken(userDetails.getUsername());
         assertThat(jwtHelper.validateToken(token, "a@a.com")).isTrue();
     }
 
     @Test
     void shouldCorrectlyExtractUsername() {
-        String token = jwtHelper.createToken(new HashMap<>(), userDetails.getUsername());
+        String token = jwtHelper.createToken(userDetails.getUsername());
         assertThat(jwtHelper.extractUsername(token)).isEqualTo("a@a.com");
 
     }
@@ -69,7 +69,7 @@ public class JwtHelperTest {
     void shouldRejectExpiredToken() {
         JwtProperties properties = new JwtProperties(-1000000L, SECRET_KEY);
         JwtHelper expired = new JwtHelper(properties);
-        String token = expired.createToken(new HashMap<>(), userDetails.getUsername());
+        String token = expired.createToken(userDetails.getUsername());
 
         assertThat(expired.validateToken(token, "a@a.com")).isFalse();
     }

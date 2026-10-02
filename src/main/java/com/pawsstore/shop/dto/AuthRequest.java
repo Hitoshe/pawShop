@@ -1,6 +1,6 @@
 package com.pawsstore.shop.dto;
 
-public record TokenRequest(
+public record AuthRequest(
         String email,
         String password
 ) {

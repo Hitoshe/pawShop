@@ -3,6 +3,7 @@ package com.pawsstore.shop.service;
 import com.pawsstore.shop.dto.UserRequest;
 import com.pawsstore.shop.dto.UserResponse;
 import com.pawsstore.shop.exceptions.EmailAlreadyExistsException;
+import com.pawsstore.shop.exceptions.UserNotFoundException;
 import com.pawsstore.shop.mapper.UserMapper;
 import com.pawsstore.shop.model.User;
 import com.pawsstore.shop.repository.UserRepository;
@@ -30,7 +31,13 @@ public class UserService {
     }
 
     public UserResponse getUser(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException());
+        User user = userRepository.findById(id).orElseThrow(() ->
+                new UserNotFoundException("Пользователь не найден"));
+        return UserMapper.toResponse(user);
+    }
+
+    public UserResponse findByEmail(String email) {
+        User user = userRepository.findByEmail(email).orElseThrow();
         return UserMapper.toResponse(user);
     }
 }

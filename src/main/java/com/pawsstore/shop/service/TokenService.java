@@ -1,7 +1,9 @@
 package com.pawsstore.shop.service;
 
-import com.pawsstore.shop.dto.TokenRequest;
-import com.pawsstore.shop.dto.TokenResponse;
+import com.pawsstore.shop.dto.RefreshRequest;
+import com.pawsstore.shop.dto.AuthRequest;
+import com.pawsstore.shop.dto.AuthResponse;
+import com.pawsstore.shop.model.RefreshToken;
 import com.pawsstore.shop.security.JwtHelper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 
 @Service
 @RequiredArgsConstructor
@@ -18,16 +19,24 @@ public class TokenService {
 
     private final JwtHelper jwtHelper;
     private final AuthenticationProvider provider;
+    private final RefreshTokenService refreshTokenService;
 
 
-    public TokenResponse login(TokenRequest request) {
+    public AuthResponse login(AuthRequest request) {
         Authentication authenticate =
                 provider.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
 
         UserDetails principal = (UserDetails) authenticate.getPrincipal();
 
-        String token = jwtHelper.createToken(new HashMap<>(), principal.getUsername());
+        String accessToken = jwtHelper.createToken(principal.getUsername());
+        RefreshToken refreshToken = refreshTokenService.generateToken(principal.getUsername());
 
-        return new TokenResponse(token);
+        return new AuthResponse(accessToken, refreshToken.getToken());
+    }
+
+    public AuthResponse refresh(RefreshRequest request) {
+        RefreshToken newRefreshToken = refreshTokenService.rotate(request.refreshToken());
+        String newAccessToken = jwtHelper.createToken(newRefreshToken.getUser().getEmail());
+        return new AuthResponse(newAccessToken, newRefreshToken.getToken());
     }
 }

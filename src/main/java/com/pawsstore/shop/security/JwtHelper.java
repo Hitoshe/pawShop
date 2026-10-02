@@ -10,7 +10,6 @@ import javax.crypto.SecretKey;
 import java.time.Instant;
 import java.util.Base64;
 import java.util.Date;
-import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -20,14 +19,13 @@ public final class JwtHelper {
 
 
 
-    public String createToken(Map<String, Object> claims, String subject) {
+    public String createToken(String subject) {
         Date expiryDate =
                 Date.from(Instant.ofEpochMilli(System.currentTimeMillis() + properties.validity()));
         byte[] keyBytes = Base64.getDecoder().decode(properties.secretKey());
         SecretKey key = Keys.hmacShaKeyFor(keyBytes);
 
         return Jwts.builder()
-                .claims(claims)
                 .subject(subject)
                 .issuedAt(Date.from(Instant.ofEpochMilli(System.currentTimeMillis())))
                 .expiration(expiryDate)
