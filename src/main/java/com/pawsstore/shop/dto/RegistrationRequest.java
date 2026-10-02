@@ -4,11 +4,10 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-public record UserRequest(
+public record RegistrationRequest(
         @NotBlank
         @Email
         String email,
-        @NotNull String password,
-        @NotNull String role
+        @NotNull String password
 ) {
 }

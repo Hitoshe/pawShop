@@ -1,9 +1,8 @@
 package com.pawsstore.shop.mapper;
 
-import com.pawsstore.shop.dto.UserRequest;
+import com.pawsstore.shop.dto.RegistrationRequest;
 import com.pawsstore.shop.dto.UserResponse;
 import com.pawsstore.shop.model.User;
-import com.pawsstore.shop.model.roles.UserRole;
 
 
 public final class UserMapper {
@@ -11,11 +10,9 @@ public final class UserMapper {
     private UserMapper() {
     }
 
-    public static User toEntity(UserRequest request) {
+    public static User toEntity(RegistrationRequest request) {
         User user = new User();
         user.setEmail(request.email());
-        user.setRole(UserRole.valueOf(request.role()));
-        user.setPasswordHash(request.password());
         return user;
     }
 
