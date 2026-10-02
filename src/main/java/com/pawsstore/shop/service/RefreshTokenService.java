@@ -8,7 +8,6 @@ import com.pawsstore.shop.repository.RefreshTokenRepository;
 import com.pawsstore.shop.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.service.UnknownServiceException;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;

@@ -45,9 +45,9 @@ public class User implements UserDetails {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
-    @Column(name = "role", nullable = false)
+    @Column(name = "role", nullable = false, insertable = false)
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private UserRole role = UserRole.CUSTOMER;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreatedDate
