@@ -31,7 +31,7 @@ public class UserRestController {
     }
 
     @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("{id}")
+    @GetMapping("/user/{id}")
     public UserResponse getUser(@PathVariable Long id) {
         return userService.getUser(id);
     }

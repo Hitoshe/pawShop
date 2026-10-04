@@ -39,10 +39,33 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<ErrorResponse> handleInvalidLogin(BadCredentialsException exception) {
-        return ResponseEntity.badRequest().body(new ErrorResponse("INVALID_CREDENTIALS",
-                "Неправильный логин или пароль",
+        return ResponseEntity.status(401).body(new ErrorResponse("INVALID_CREDENTIALS",
+                exception.getMessage(),
                 new HashMap<>()));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyExists(EmailAlreadyExistsException exception) {
+        return ResponseEntity.status(409).body(new ErrorResponse("EMAIL_EXISTS",
+                exception.getMessage(), new HashMap<>()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleRefreshTokenExceptions(ExpiredRefreshTokenException exception) {
+        return ResponseEntity.status(401).body(new ErrorResponse("TOKEN_EXPIRED",
+                exception.getMessage(), new HashMap<>()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleRefreshTokenRevoked(RefreshTokenRevokedException exception) {
+        return ResponseEntity.status(401).body(new ErrorResponse("TOKEN_REVOKED",
+                exception.getMessage(), new HashMap<>()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleRefreshTokenInvalid(RefreshTokenInvalidException exception) {
+        return ResponseEntity.status(401).body(new ErrorResponse("TOKEN_INVALID",
+                exception.getMessage(), new HashMap<>()));
+    }
 
 }

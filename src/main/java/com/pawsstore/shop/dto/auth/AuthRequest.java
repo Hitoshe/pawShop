@@ -1,4 +1,4 @@
-package com.pawsstore.shop.dto;
+package com.pawsstore.shop.dto.auth;
 
 public record AuthRequest(
         String email,

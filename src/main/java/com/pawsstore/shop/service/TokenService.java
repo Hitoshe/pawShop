@@ -1,8 +1,9 @@
 package com.pawsstore.shop.service;
 
 import com.pawsstore.shop.dto.RefreshRequest;
-import com.pawsstore.shop.dto.AuthRequest;
-import com.pawsstore.shop.dto.AuthResponse;
+import com.pawsstore.shop.dto.auth.AuthRequest;
+import com.pawsstore.shop.dto.auth.AuthResponse;
+import com.pawsstore.shop.dto.auth.LogoutRequest;
 import com.pawsstore.shop.model.RefreshToken;
 import com.pawsstore.shop.security.JwtHelper;
 import lombok.RequiredArgsConstructor;
@@ -38,5 +39,9 @@ public class TokenService {
         RefreshToken newRefreshToken = refreshTokenService.rotate(request.refreshToken());
         String newAccessToken = jwtHelper.createToken(newRefreshToken.getUser().getEmail());
         return new AuthResponse(newAccessToken, newRefreshToken.getToken());
+    }
+
+    public boolean revoke(LogoutRequest request) {
+        return refreshTokenService.revoke(request.refreshToken());
     }
 }

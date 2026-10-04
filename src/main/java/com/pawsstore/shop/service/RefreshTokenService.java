@@ -1,6 +1,8 @@
 package com.pawsstore.shop.service;
 
 import com.pawsstore.shop.exceptions.ExpiredRefreshTokenException;
+import com.pawsstore.shop.exceptions.RefreshTokenInvalidException;
+import com.pawsstore.shop.exceptions.RefreshTokenRevokedException;
 import com.pawsstore.shop.exceptions.UserNotFoundException;
 import com.pawsstore.shop.model.RefreshToken;
 import com.pawsstore.shop.model.User;
@@ -36,9 +38,14 @@ public class RefreshTokenService {
         return repository.save(refreshToken);
     }
 
-    @Transactional
+    @Transactional(dontRollbackOn = ExpiredRefreshTokenException.class)
     public RefreshToken rotate(String token) {
-        RefreshToken refreshToken = repository.findByToken(token).orElseThrow();
+        RefreshToken refreshToken = repository.findByToken(token).orElseThrow(()
+                -> new RefreshTokenInvalidException("Токена нет в базе"));
+
+        if(refreshToken.isRevoked()) {
+            throw new RefreshTokenRevokedException("Рефреш токен отозван");
+        }
 
         if(refreshToken.getExpiryDate().isBefore(Instant.now())) {
             repository.delete(refreshToken);
@@ -49,5 +56,13 @@ public class RefreshTokenService {
         refreshToken.setExpiryDate(Instant.now().plus(refreshDurationDays, ChronoUnit.DAYS));
 
         return repository.save(refreshToken);
+    }
+
+    @Transactional
+    public boolean revoke(String token) {
+        RefreshToken refreshToken = repository.findByToken(token).orElseThrow(()
+                -> new RefreshTokenInvalidException("Токена нет в базе"));
+        refreshToken.setRevoked(true);
+        return true;
     }
 }
