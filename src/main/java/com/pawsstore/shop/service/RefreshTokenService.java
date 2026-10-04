@@ -8,6 +8,7 @@ import com.pawsstore.shop.model.RefreshToken;
 import com.pawsstore.shop.model.User;
 import com.pawsstore.shop.repository.RefreshTokenRepository;
 import com.pawsstore.shop.repository.UserRepository;
+import com.pawsstore.shop.security.JwtProperties;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class RefreshTokenService {
 
-    private final long refreshDurationDays = 7L;
+    private final JwtProperties properties;
 
     private final RefreshTokenRepository repository;
     private final UserRepository userRepository;
@@ -33,7 +34,7 @@ public class RefreshTokenService {
         RefreshToken refreshToken = new RefreshToken();
         refreshToken.setUser(user);
         refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken.setExpiryDate(Instant.now().plus(refreshDurationDays, ChronoUnit.DAYS));
+        refreshToken.setExpiryDate(Instant.now().plus(properties.refreshTokenValidityDays(), ChronoUnit.DAYS));
 
         return repository.save(refreshToken);
     }
@@ -53,7 +54,7 @@ public class RefreshTokenService {
         }
 
         refreshToken.setToken(UUID.randomUUID().toString());
-        refreshToken.setExpiryDate(Instant.now().plus(refreshDurationDays, ChronoUnit.DAYS));
+        refreshToken.setExpiryDate(Instant.now().plus(properties.refreshTokenValidityDays(), ChronoUnit.DAYS));
 
         return repository.save(refreshToken);
     }

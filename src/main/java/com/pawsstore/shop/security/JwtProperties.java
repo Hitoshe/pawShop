@@ -6,7 +6,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record JwtProperties(
 
         long validity,
-        String secretKey
+        String secretKey,
+        int refreshTokenValidityDays
 ) {
 
 
