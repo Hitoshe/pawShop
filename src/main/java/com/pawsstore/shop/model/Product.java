@@ -4,54 +4,44 @@ import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-/**
- * Сущность товара.
- * Поля дублируются (Ru/En) для обеспечения мультиязычности без использования сложных словарей.
- */
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Table(name = "products")
-@Data // Генерирует геттеры, сеттеры, toString и equals/hashCode через Lombok
-@NoArgsConstructor // Пустой конструктор (нужен для JPA)
-@AllArgsConstructor // Конструктор со всеми полями (используется в DataInitializer)
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
-    // Текстовые данные на двух языках
-    private String nameEn;
-    private String nameRu;
-    private String categoryEn;
-    private String categoryRu;
+    @Column(name = "title", nullable = false)
+    private String title;
 
-    @Column(length = 500)
-    private String shortDescriptionEn;
-    @Column(length = 500)
-    private String shortDescriptionRu;
+    @Column(name = "description", nullable = false)
+    private String description;
 
-    @Column(length = 2000)
-    private String fullDescriptionEn;
-    @Column(length = 2000)
-    private String fullDescriptionRu;
+    @Column(name = "price", nullable = false)
+    private BigDecimal price;
 
-    // Числовые данные
-    private Double price;
-    private Double oldPrice;
-    private Double rating;
-    private Integer reviewsCount;
+    @Column(name = "rating")
+    private BigDecimal rating;
 
-    // Ссылки на изображения (хранятся в /static/images/)
-    private String imageUrl;
-    private String imageUrl2;
-    private String imageUrl3;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "images", nullable = false, columnDefinition = "jsonb")
+    private List<String> images;
 
-    // Технические характеристики
-    private String materialEn;
-    private String materialRu;
-    private String dimensionsEn;
-    private String dimensionsRu;
-    private String weightLimitEn;
-    private String weightLimitRu;
+    @Column(name = "stock_quantity", nullable = false)
+    private Long stockQuantity;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt;
 }
