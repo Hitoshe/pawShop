@@ -10,16 +10,16 @@ import org.junit.jupiter.api.Test;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("JwtHelperTest")
-public class JwtHelperTest {
+class JwtHelperTest {
 
     private static final String SECRET_KEY =
             "dGhpcy1pcy1hLXZlcnktbG9uZy1zZWNyZXQta2V5LWZvci1qd3Qtc2lnbmluZy0xMjM0";
     private static final long EXPIRATION = 3_600_000L;
+    private static final int REFRESH_TOKEN_VALIDITY_DAYS = 7;
 
     private JwtHelper jwtHelper;
     private UserDetails userDetails;
@@ -27,7 +27,7 @@ public class JwtHelperTest {
 
     @BeforeEach
     void setUp() {
-        JwtProperties properties = new JwtProperties(EXPIRATION, SECRET_KEY);
+        JwtProperties properties = new JwtProperties(EXPIRATION, SECRET_KEY, REFRESH_TOKEN_VALIDITY_DAYS);
         jwtHelper = new JwtHelper(properties);
         userDetails = new User(1L, "a@a.com", "passwordHash", UserRole.CUSTOMER, LocalDateTime.now());
     }
@@ -36,7 +36,6 @@ public class JwtHelperTest {
     void shouldGenerateToken() {
         String token = jwtHelper.createToken(userDetails.getUsername());
 
-        System.out.println(token);
 
         assertThat(token).isNotBlank();
         assertThat(token.split("\\.")).hasSize(3);
@@ -67,7 +66,7 @@ public class JwtHelperTest {
 
     @Test
     void shouldRejectExpiredToken() {
-        JwtProperties properties = new JwtProperties(-1000000L, SECRET_KEY);
+        JwtProperties properties = new JwtProperties(-1000000L, SECRET_KEY, REFRESH_TOKEN_VALIDITY_DAYS);
         JwtHelper expired = new JwtHelper(properties);
         String token = expired.createToken(userDetails.getUsername());
 
