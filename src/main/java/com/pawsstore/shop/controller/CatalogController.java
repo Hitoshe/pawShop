@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Locale;
 
@@ -75,12 +76,13 @@ public class CatalogController {
     public String showAbout() { return "about"; }
 
     @GetMapping("/deals")
-    public String showDeals(Model model) {
+    public String showDeals(Model model, Principal principal) {
         List<Product> dealProducts = productRepository.findAll().stream()
                 .filter(p -> p.getOldPrice() != null && p.getOldPrice() > p.getPrice())
                 .toList();
         model.addAttribute("products", dealProducts);
         model.addAttribute("isDealsPage", true);
+        System.out.println(principal.getName());
         return "deals";
     }
 
