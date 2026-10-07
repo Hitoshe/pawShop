@@ -74,6 +74,8 @@ class UserServiceTest {
         EmailAlreadyExistsException emailAlreadyExistsException =
                 Assertions.assertThrows(EmailAlreadyExistsException.class, () -> userService.createUser(registrationRequest, english));
 
+        Mockito.verify(userRepository, Mockito.never()).save(any());
+
         Assertions.assertEquals("Email already exists", emailAlreadyExistsException.getMessage());
     }
 }
