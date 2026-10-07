@@ -7,6 +7,7 @@ import com.pawsstore.shop.exceptions.UserNotFoundException;
 import com.pawsstore.shop.mapper.UserMapper;
 import com.pawsstore.shop.model.User;
 import com.pawsstore.shop.repository.UserRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,6 +23,7 @@ public class UserService {
     private final MessageSource messageSource;
     private final PasswordEncoder passwordEncoder;
 
+    @Transactional
     public UserResponse createUser(RegistrationRequest userRequest, Locale locale) {
 
         if(userRepository.existsByEmail(userRequest.email())) {

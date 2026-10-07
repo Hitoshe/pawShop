@@ -6,6 +6,7 @@ import com.pawsstore.shop.dto.auth.AuthResponse;
 import com.pawsstore.shop.dto.auth.LogoutRequest;
 import com.pawsstore.shop.model.RefreshToken;
 import com.pawsstore.shop.security.JwtHelper;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,7 @@ public class TokenService {
     private final RefreshTokenService refreshTokenService;
 
 
+    @Transactional
     public AuthResponse login(AuthRequest request) {
         Authentication authenticate =
                 provider.authenticate(new UsernamePasswordAuthenticationToken(request.email(), request.password()));
@@ -35,12 +37,14 @@ public class TokenService {
         return new AuthResponse(accessToken, refreshToken.getToken());
     }
 
+    @Transactional
     public AuthResponse refresh(RefreshRequest request) {
         RefreshToken newRefreshToken = refreshTokenService.rotate(request.refreshToken());
         String newAccessToken = jwtHelper.createToken(newRefreshToken.getUser().getEmail());
         return new AuthResponse(newAccessToken, newRefreshToken.getToken());
     }
 
+    @Transactional
     public boolean revoke(LogoutRequest request) {
         return refreshTokenService.revoke(request.refreshToken());
     }
