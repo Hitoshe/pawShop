@@ -3,6 +3,7 @@ package com.pawsstore.shop.service;
 import com.pawsstore.shop.dto.RefreshRequest;
 import com.pawsstore.shop.dto.auth.AuthRequest;
 import com.pawsstore.shop.dto.auth.AuthResponse;
+import com.pawsstore.shop.dto.auth.LogoutRequest;
 import com.pawsstore.shop.model.RefreshToken;
 import com.pawsstore.shop.model.User;
 import com.pawsstore.shop.model.roles.UserRole;
@@ -94,5 +95,12 @@ class TokenServiceTest {
 
     @Test
     void revoke() {
+        LogoutRequest someRefreshToken = new LogoutRequest("some refresh token");
+
+        Mockito.when(refreshTokenService.revoke("some refresh token")).thenReturn(Boolean.TRUE);
+
+        boolean revoke = tokenService.revoke(someRefreshToken);
+
+        Assertions.assertTrue(revoke);
     }
 }
