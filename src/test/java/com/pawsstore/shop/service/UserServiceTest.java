@@ -2,6 +2,7 @@ package com.pawsstore.shop.service;
 
 import com.pawsstore.shop.dto.RegistrationRequest;
 import com.pawsstore.shop.dto.UserResponse;
+import com.pawsstore.shop.exceptions.EmailAlreadyExistsException;
 import com.pawsstore.shop.model.User;
 import com.pawsstore.shop.model.roles.UserRole;
 import com.pawsstore.shop.repository.UserRepository;
@@ -27,9 +28,9 @@ class UserServiceTest {
     @Mock
     private UserRepository userRepository;
     @Mock
-    private MessageSource messageSource;
-    @Mock
     private PasswordEncoder passwordEncoder;
+    @Mock
+    private MessageSource messageSource;
 
     @InjectMocks
     private UserService userService;
@@ -59,5 +60,20 @@ class UserServiceTest {
         Assertions.assertEquals("a@a.com" ,capture.getEmail());
         Assertions.assertEquals(UserRole.CUSTOMER, capture.getRole());
         Assertions.assertEquals("$2a$10$Pq0EK5B.g7SaftmjjIiZIOw/l2sMxNYZ9p2HGTAoEfuCPpX4hWEJ2", capture.getPasswordHash());
+    }
+
+    @Test
+    void createUserWithExistingEmail() {
+        Locale english = Locale.ENGLISH;
+        RegistrationRequest registrationRequest = new RegistrationRequest("a@a.com", "1");
+
+        Mockito.when(userRepository.existsByEmail("a@a.com")).thenReturn(true);
+        Mockito.when(messageSource.getMessage("email.exists", null, english))
+                .thenReturn("Email already exists");
+
+        EmailAlreadyExistsException emailAlreadyExistsException =
+                Assertions.assertThrows(EmailAlreadyExistsException.class, () -> userService.createUser(registrationRequest, english));
+
+        Assertions.assertEquals("Email already exists", emailAlreadyExistsException.getMessage());
     }
 }

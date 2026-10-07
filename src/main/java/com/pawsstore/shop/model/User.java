@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -47,6 +48,7 @@ public class User implements UserDetails {
 
     @Column(name = "role", nullable = false, insertable = false)
     @Enumerated(EnumType.STRING)
+    @ColumnDefault("'CUSTOMER'")
     private UserRole role = UserRole.CUSTOMER;
 
     @Column(name = "created_at", nullable = false, updatable = false)
