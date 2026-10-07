@@ -54,7 +54,7 @@ class AuthControllerTest {
     }
 
     @Test
-    @Sql(scripts = {"data/deleteData.sql", "data/insertData.sql"})
+    @Sql(scripts = {"/data/deleteData.sql", "/data/insertData.sql"})
     void loginNegative() {
     }
 
