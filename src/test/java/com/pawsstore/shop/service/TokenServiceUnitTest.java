@@ -26,7 +26,7 @@ import java.util.Collections;
 import static org.mockito.ArgumentMatchers.any;
 
 @ExtendWith(MockitoExtension.class)
-class TokenServiceTest {
+class TokenServiceUnitTest {
 
     @Mock
     private JwtHelper jwtHelper;
