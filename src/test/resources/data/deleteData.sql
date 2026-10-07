@@ -1,1 +1,2 @@
-delete from users;
+DELETE FROM refresh_tokens;
+DELETE FROM users;
