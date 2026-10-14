@@ -1,0 +1,1 @@
+alter table refresh_tokens add column revoked boolean not null default false;
