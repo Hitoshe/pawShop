@@ -68,4 +68,40 @@ public class GlobalExceptionHandler {
                 exception.getMessage(), new HashMap<>()));
     }
 
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleProductNotFound(ProductNotFoundException exception) {
+        return ResponseEntity.status(404).body(new ErrorResponse("PRODUCT_NOT_FOUND",
+                exception.getMessage(), new HashMap<>()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleCartItemNotFound(CartItemNotFoundException exception) {
+        return ResponseEntity.status(404).body(new ErrorResponse("CART_ITEM_NOT_FOUND",
+                exception.getMessage(), new HashMap<>()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException exception) {
+        return ResponseEntity.status(404).body(new ErrorResponse("USER_NOT_FOUND",
+                exception.getMessage(), new HashMap<>()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleCartAccessDenied(CartAccessDeniedException exception) {
+        return ResponseEntity.status(403).body(new ErrorResponse("CART_FORBIDDEN",
+                exception.getMessage(), new HashMap<>()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleInsufficientStock(InsufficientStockException exception) {
+        return ResponseEntity.status(409).body(new ErrorResponse("INSUFFICIENT_STOCK",
+                exception.getMessage(), new HashMap<>()));
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handleInvalidPromo(InvalidPromoCodeException exception) {
+        return ResponseEntity.status(400).body(new ErrorResponse("PROMO_INVALID",
+                exception.getMessage(), new HashMap<>()));
+    }
+
 }
