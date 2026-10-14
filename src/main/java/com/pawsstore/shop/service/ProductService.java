@@ -18,7 +18,6 @@ public class ProductService {
 
     private final ProductRepository repository;
 
-
     public PagedResponse<ProductProjection> getProducts(ProductFilterParams params) {
         Specification<Product> productSpecification = Specification.allOf(
                 ProductSpecification.hasTitle(params.search()),
