@@ -3,11 +3,12 @@ package com.pawsstore.shop.repository;
 import com.pawsstore.shop.model.Product;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
 
-public interface ProductRepository extends JpaRepository<Product, Long> {
+public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
 
     /**
      * Кастомный запрос на языке JPQL.
@@ -22,4 +23,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             @Param("applyRating") boolean applyRating,
             Sort sort
     );
+
+
 }
