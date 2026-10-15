@@ -21,6 +21,3 @@ CREATE TABLE cart_items
     quantity   INTEGER NOT NULL CHECK (quantity > 0),
     UNIQUE (cart_id, product_id)
 );
-
-INSERT INTO promo_codes (code, discount_percentage, is_active)
-VALUES ('SAVE10', 10.00, TRUE);

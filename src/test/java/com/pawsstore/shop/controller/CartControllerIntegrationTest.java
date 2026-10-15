@@ -1,27 +1,19 @@
 package com.pawsstore.shop.controller;
 
 import com.pawsstore.shop.dto.RegistrationRequest;
-import com.pawsstore.shop.model.Product;
-import com.pawsstore.shop.model.PromoCode;
-import com.pawsstore.shop.repository.ProductRepository;
-import com.pawsstore.shop.repository.PromoCodeRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlMergeMode;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import tools.jackson.databind.JsonNode;
 import tools.jackson.databind.ObjectMapper;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
-import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -33,58 +25,44 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
-@Sql(scripts = {"/data/deleteData.sql", "/data/insertData.sql"})
+@SqlMergeMode(SqlMergeMode.MergeMode.MERGE)
 @Sql(scripts = "/data/deleteData.sql", executionPhase = Sql.ExecutionPhase.AFTER_TEST_METHOD)
 class CartControllerIntegrationTest {
+
+    private static final long PRODUCT_ID = 1L;
 
     @Autowired
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
-    private ProductRepository productRepository;
-    @Autowired
-    private PromoCodeRepository promoCodeRepository;
-    @Autowired
     private JdbcTemplate jdbcTemplate;
 
-    private Long productId;
-
-    @BeforeEach
-    void seedCatalog() {
-        Product product = new Product();
-        product.setTitle("Корм");
-        product.setDescription("Сухой корм");
-        product.setPrice(new BigDecimal("100.00"));
-        product.setRating(new BigDecimal("4.5"));
-        product.setImages(List.of("https://img/1.png", "https://img/2.png", "https://img/3.png"));
-        product.setStockQuantity(5L);
-        product.setCreatedAt(LocalDateTime.now());
-        productId = productRepository.save(product).getId();
-
-        PromoCode promo = new PromoCode();
-        promo.setCode("SAVE10");
-        promo.setDiscountPercentage(new BigDecimal("10.00"));
-        promo.setActive(true);
-        promoCodeRepository.save(promo);
-    }
-
     @Test
+    @Sql(scripts = {"/data/deleteData.sql", "/data/insertData.sql", "/data/insertCartData.sql"})
     void cartRequiresToken() throws Exception {
         mockMvc.perform(get("/api/cart"))
                 .andExpect(status().isUnauthorized());
     }
 
     @Test
+    @Sql(scripts = {"/data/deleteData.sql", "/data/insertData.sql", "/data/insertCartData.sql"})
     void customerCanManageOwnCartAndApplyPromo() throws Exception {
         String token = login("a@a.com", "1");
+
+        mockMvc.perform(get("/api/cart")
+                        .header("Authorization", "Bearer " + token))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.items.length()").value(0))
+                .andExpect(jsonPath("$.subtotal").value(0.00));
 
         mockMvc.perform(post("/api/cart/items")
                         .header("Authorization", "Bearer " + token)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"productId": %d, "quantity": 2}
-                                """.formatted(productId)))
+                                """.formatted(PRODUCT_ID)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items[0].quantity").value(2))
                 .andExpect(jsonPath("$.items[0].price").value(100.00))
@@ -95,7 +73,7 @@ class CartControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"productId": %d, "quantity": 1}
-                                """.formatted(productId)))
+                                """.formatted(PRODUCT_ID)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.items.length()").value(1))
                 .andExpect(jsonPath("$.items[0].quantity").value(3))
@@ -110,7 +88,7 @@ class CartControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"productId": %d, "quantity": 3}
-                                """.formatted(productId)))
+                                """.formatted(PRODUCT_ID)))
                 .andExpect(status().isConflict())
                 .andExpect(jsonPath("$.code").value("INSUFFICIENT_STOCK"));
 
@@ -157,6 +135,7 @@ class CartControllerIntegrationTest {
     }
 
     @Test
+    @Sql(scripts = {"/data/deleteData.sql", "/data/insertData.sql", "/data/insertCartData.sql"})
     void anotherCustomerCannotChangeTheLine() throws Exception {
         String ownerToken = login("a@a.com", "1");
         register("b@b.com", "secret1");
@@ -167,7 +146,7 @@ class CartControllerIntegrationTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                                 {"productId": %d, "quantity": 1}
-                                """.formatted(productId)))
+                                """.formatted(PRODUCT_ID)))
                 .andExpect(status().isOk())
                 .andReturn();
         JsonNode body = objectMapper.readTree(created.getResponse().getContentAsString());

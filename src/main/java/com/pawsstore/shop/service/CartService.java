@@ -2,10 +2,10 @@ package com.pawsstore.shop.service;
 
 import com.pawsstore.shop.dto.cart.AddCartItemRequest;
 import com.pawsstore.shop.dto.cart.ApplyPromoRequest;
-import com.pawsstore.shop.dto.cart.CartItemResponse;
 import com.pawsstore.shop.dto.cart.CartResponse;
 import com.pawsstore.shop.dto.cart.PromoApplicationResponse;
 import com.pawsstore.shop.dto.cart.UpdateCartItemRequest;
+import com.pawsstore.shop.mapper.CartMapper;
 import com.pawsstore.shop.exceptions.CartAccessDeniedException;
 import com.pawsstore.shop.exceptions.CartItemNotFoundException;
 import com.pawsstore.shop.exceptions.InsufficientStockException;
@@ -28,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -43,12 +42,9 @@ public class CartService {
     private final PromoCodeRepository promoCodeRepository;
     private final UserRepository userRepository;
 
-    @Transactional(readOnly = true)
     public CartResponse getCart(String email) {
         User user = currentUser(email);
-        return cartRepository.findByUserId(user.getId())
-                .map(this::toResponse)
-                .orElseGet(() -> new CartResponse(null, List.of(), money(BigDecimal.ZERO)));
+        return toResponse(getOrCreateCart(user));
     }
 
     public CartResponse addItem(String email, AddCartItemRequest request) {
@@ -99,7 +95,7 @@ public class CartService {
 
         BigDecimal subtotal = cartRepository.findByUserId(user.getId())
                 .map(cart -> toResponse(cart).subtotal())
-                .orElse(money(BigDecimal.ZERO));
+                .orElse(CartMapper.money(BigDecimal.ZERO));
         BigDecimal discount = subtotal
                 .multiply(promo.getDiscountPercentage())
                 .divide(BigDecimal.valueOf(100), MONEY_SCALE, RoundingMode.HALF_UP);
@@ -144,29 +140,6 @@ public class CartService {
     }
 
     private CartResponse toResponse(Cart cart) {
-        List<CartItemResponse> items = cartItemRepository.findAllWithProductByCartId(cart.getId()).stream()
-                .map(this::toItem)
-                .toList();
-        BigDecimal subtotal = items.stream()
-                .map(CartItemResponse::lineTotal)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-        return new CartResponse(cart.getId(), items, money(subtotal));
-    }
-
-    private CartItemResponse toItem(CartItem item) {
-        BigDecimal price = money(item.getProduct().getPrice());
-        BigDecimal lineTotal = price.multiply(BigDecimal.valueOf(item.getQuantity()));
-        return new CartItemResponse(
-                item.getId(),
-                item.getProduct().getId(),
-                item.getProduct().getTitle(),
-                price,
-                item.getQuantity(),
-                money(lineTotal)
-        );
-    }
-
-    private BigDecimal money(BigDecimal value) {
-        return value.setScale(MONEY_SCALE, RoundingMode.HALF_UP);
+        return CartMapper.toResponse(cart, cartItemRepository.findAllWithProductByCartId(cart.getId()));
     }
 }

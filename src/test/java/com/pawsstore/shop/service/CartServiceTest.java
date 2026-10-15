@@ -128,6 +128,25 @@ class CartServiceTest {
     }
 
     @Test
+    void getCartCreatesEmptyCart() {
+        User user = user(1L, "a@a.com");
+        when(userRepository.findByEmail("a@a.com")).thenReturn(Optional.of(user));
+        when(cartRepository.findByUserId(1L)).thenReturn(Optional.empty());
+        when(cartRepository.save(any())).thenAnswer(invocation -> {
+            Cart cart = invocation.getArgument(0);
+            cart.setId(10L);
+            return cart;
+        });
+        when(cartItemRepository.findAllWithProductByCartId(10L)).thenReturn(List.of());
+
+        CartResponse response = cartService.getCart("a@a.com");
+
+        assertEquals(10L, response.id());
+        assertEquals(0, response.items().size());
+        assertEquals(new BigDecimal("0.00"), response.subtotal());
+    }
+
+    @Test
     void inactivePromoIsRejected() {
         User user = user(1L, "a@a.com");
         PromoCode promo = new PromoCode();
