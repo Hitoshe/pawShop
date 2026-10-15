@@ -36,7 +36,7 @@ public class Product {
     private BigDecimal rating;
 
     @JdbcTypeCode(SqlTypes.JSON)
-    @Column(name = "images", nullable = false, columnDefinition = "jsonb")
+    @Column(name = "images", nullable = false)
     private List<String> images;
 
     @Column(name = "stock_quantity", nullable = false)
