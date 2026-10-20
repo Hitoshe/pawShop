@@ -25,9 +25,4 @@ public class RestCatalogController {
         return productService.getProducts(params);
     }
 
-    /* TODO
-    * когда сделаете CRUD методы для товаров на create, update, delete накинуть
-    * @CacheEvict(value = "product:params", allEntries = true)
-    * @PreAuthorize("hasRole("ADMIN")") (как-то так, не помню точно)
-    */
 }

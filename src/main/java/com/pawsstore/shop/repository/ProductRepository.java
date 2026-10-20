@@ -14,7 +14,7 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
      * Кастомный запрос на языке JPQL.
      * Позволяет фильтровать товары по диапазону цен и минимальному рейтингу одновременно.
      */
-    @Query("SELECT p FROM Product p WHERE p.price BETWEEN :minPrice AND :maxPrice " +
+    @Query("SELECT p FROM Product p WHERE p.deletedAt IS NULL AND p.price BETWEEN :minPrice AND :maxPrice " +
             "AND (:applyRating = false OR FLOOR(p.rating) IN :ratings)")
     List<Product> filterProducts(
             @Param("minPrice") Double minPrice,

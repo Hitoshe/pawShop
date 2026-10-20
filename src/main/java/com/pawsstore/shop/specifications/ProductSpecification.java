@@ -40,6 +40,10 @@ public class ProductSpecification {
         });
     }
 
+    public static Specification<Product> isNotDeleted() {
+        return (root, query, criteriaBuilder) -> criteriaBuilder.isNull(root.get("deletedAt"));
+    }
+
     public static Specification<Product> hasRatingHigherThan(BigDecimal rating) {
             if(rating == null) {
                 return Specification.unrestricted();
