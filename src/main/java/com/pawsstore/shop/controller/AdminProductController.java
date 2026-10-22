@@ -6,7 +6,6 @@ import com.pawsstore.shop.dto.product.UpdateProductRequest;
 import com.pawsstore.shop.service.ProductService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,7 +18,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/products")
+@RequestMapping("/api/admin/products")
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class AdminProductController {
@@ -28,20 +27,17 @@ public class AdminProductController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    @CacheEvict(value = "product:params", allEntries = true)
     public ProductResponse create(@RequestBody @Valid CreateProductRequest request) {
         return productService.create(request);
     }
 
     @PatchMapping("/{id}")
-    @CacheEvict(value = "product:params", allEntries = true)
     public ProductResponse update(@PathVariable Long id, @RequestBody @Valid UpdateProductRequest request) {
         return productService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @CacheEvict(value = "product:params", allEntries = true)
     public void delete(@PathVariable Long id) {
         productService.delete(id);
     }

@@ -13,6 +13,8 @@ import com.pawsstore.shop.repository.ProductRepository;
 import com.pawsstore.shop.specifications.ProductFilterParams;
 import com.pawsstore.shop.specifications.ProductSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -26,6 +28,7 @@ public class ProductService {
 
     private final ProductRepository repository;
 
+    @Cacheable(value = "product:params", key = "#params.toString()")
     public PagedResponse<ProductProjection> getProducts(ProductFilterParams params) {
         Specification<Product> productSpecification = Specification.allOf(
                 ProductSpecification.isNotDeleted(),
@@ -42,6 +45,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = "product:params", allEntries = true)
     public ProductResponse create(CreateProductRequest request) {
         Product product = new Product();
         product.setTitle(request.title());
@@ -55,6 +59,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = "product:params", allEntries = true)
     public ProductResponse update(Long id, UpdateProductRequest request) {
         Product product = activeProduct(id);
         if (request.title() != null) {
@@ -79,6 +84,7 @@ public class ProductService {
     }
 
     @Transactional
+    @CacheEvict(value = "product:params", allEntries = true)
     public void delete(Long id) {
         Product product = activeProduct(id);
         product.setDeletedAt(LocalDateTime.now());

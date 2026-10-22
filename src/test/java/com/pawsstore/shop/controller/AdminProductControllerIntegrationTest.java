@@ -43,12 +43,12 @@ class AdminProductControllerIntegrationTest {
 
     @Test
     void customerCannotCreateProduct() throws Exception {
-        mockMvc.perform(post("/api/products")
+        mockMvc.perform(post("/api/admin/products")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(PRODUCT))
                 .andExpect(status().isUnauthorized());
 
-        mockMvc.perform(post("/api/products")
+        mockMvc.perform(post("/api/admin/products")
                         .header("Authorization", "Bearer " + login("a@a.com", "1"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(PRODUCT))
@@ -59,7 +59,7 @@ class AdminProductControllerIntegrationTest {
     void adminCanCreateUpdateAndSoftDeleteProduct() throws Exception {
         String admin = login("admin@a.com", "1");
 
-        MvcResult created = mockMvc.perform(post("/api/products")
+        MvcResult created = mockMvc.perform(post("/api/admin/products")
                         .header("Authorization", "Bearer " + admin)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(PRODUCT))
@@ -74,7 +74,7 @@ class AdminProductControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.elements.length()").value(1));
 
-        mockMvc.perform(patch("/api/products/" + productId)
+        mockMvc.perform(patch("/api/admin/products/" + productId)
                         .header("Authorization", "Bearer " + admin)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
@@ -84,11 +84,11 @@ class AdminProductControllerIntegrationTest {
                 .andExpect(jsonPath("$.price").value(80.00))
                 .andExpect(jsonPath("$.title").value("АдминКорм"));
 
-        mockMvc.perform(delete("/api/products/" + productId)
+        mockMvc.perform(delete("/api/admin/products/" + productId)
                         .header("Authorization", "Bearer " + login("a@a.com", "1")))
                 .andExpect(status().isForbidden());
 
-        mockMvc.perform(delete("/api/products/" + productId)
+        mockMvc.perform(delete("/api/admin/products/" + productId)
                         .header("Authorization", "Bearer " + admin))
                 .andExpect(status().isNoContent());
 
@@ -96,7 +96,7 @@ class AdminProductControllerIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.elements.length()").value(0));
 
-        mockMvc.perform(delete("/api/products/" + productId)
+        mockMvc.perform(delete("/api/admin/products/" + productId)
                         .header("Authorization", "Bearer " + admin))
                 .andExpect(status().isNotFound());
 
