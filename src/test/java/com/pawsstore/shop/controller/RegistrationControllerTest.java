@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import tools.jackson.databind.ObjectMapper;
@@ -28,6 +29,7 @@ class RegistrationControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @Sql("/data/deleteData.sql")
     void registration() throws Exception {
         RegistrationRequest registrationRequest = new RegistrationRequest("a@a.com", "1");
 

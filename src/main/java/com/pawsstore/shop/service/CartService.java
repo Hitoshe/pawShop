@@ -51,6 +51,7 @@ public class CartService {
         User user = currentUser(email);
         Cart cart = getOrCreateCart(user);
         Product product = productRepository.findById(request.productId())
+                .filter(found -> found.getDeletedAt() == null)
                 .orElseThrow(() -> new ProductNotFoundException("Товар не найден"));
 
         CartItem item = cartItemRepository.findByCartIdAndProductId(cart.getId(), product.getId())
@@ -74,6 +75,9 @@ public class CartService {
     public CartResponse updateItem(String email, Long itemId, UpdateCartItemRequest request) {
         User user = currentUser(email);
         CartItem item = ownedItem(itemId, user);
+        if (item.getProduct().getDeletedAt() != null) {
+            throw new ProductNotFoundException("Товар не найден");
+        }
         assertInStock(item.getProduct(), request.quantity());
         item.setQuantity(request.quantity());
         cartItemRepository.save(item);
